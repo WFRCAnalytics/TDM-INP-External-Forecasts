@@ -1,0 +1,418 @@
+Page 1  (VOYAGER PILOT) Model Run
+Wasatch Front Regional Council
+----------------------------------
+PILOT (v.08/13/2019 [6.4.5 x64]) Tue Jul 19 13:43:10 2022
+
+Args: A:\TDM\2 - Sandbox\v9.0Beta\1 - Input Dev\5_External\Renumber v832 Ext Matrix\_Renumber_External_Matrix.s -SA:\TDM\2 - Sandbox\v9.0Beta\1 - Input Dev\5_External\Renumber v832 Ext Matrix -PTPPL -PH:58 -PW:80 -IModel Run
+Input:   A:...xternal\Renumber v832 Ext Matrix\_Renumber_External_Matrix.s
+
+RUN PGM=MATRIX,65  MSG='Renuber External Matrices from v832 to v9'
+
+PILOT Stack Size = 96 bytes.
+................................................................................
+Page 2  (VOYAGER MATRIX) Model Run
+Wasatch Front Regional Council
+-----------------------------------
+MATRIX (v.08/13/2019 [6.4.5 x64])  Tue Jul 19 13:43:11 2022
+
+FILEI MATI[1] = 'WF_External - 2019\WF_ExtTripTable_DY.mtx'
+
+FILEO MATO[1] = 'WF_ExtTripTable_DY.mtx',
+    mo=101-151,
+    name=Total         ,
+         Pass_LT       ,
+         MD_Truck      ,
+         HV_Truck      ,
+         II_LH_MD      ,
+         II_LH_HV      ,
+         IX_HBW        ,
+         IX_HBO        ,
+         IX_NHB        ,
+         IX_HBS        ,
+         IX_HBC        ,
+         IX_REC        ,
+         IX_Ext_Bus    ,
+         IX_Ext_Oth    ,
+         IX_Ext_Rec    ,
+         IX_Ext_MD     ,
+         IX_SH_LT      ,
+         IX_SH_MD      ,
+         IX_SH_HV      ,
+         IX_LH_MD      ,
+         IX_LH_HV      ,
+         XI_HBW        ,
+         XI_HBO        ,
+         XI_NHB        ,
+         XI_HBS        ,
+         XI_HBC        ,
+         XI_REC        ,
+         XI_Ext_Bus    ,
+         XI_Ext_Oth    ,
+         XI_Ext_Rec    ,
+         XI_Ext_MD     ,
+         XI_SH_LT      ,
+         XI_SH_MD      ,
+         XI_SH_HV      ,
+         XI_LH_MD      ,
+         XI_LH_HV      ,
+         XX_HBW        ,
+         XX_HBO        ,
+         XX_NHB        ,
+         XX_HBS        ,
+         XX_HBC        ,
+         XX_REC        ,
+         XX_Ext_Bus    ,
+         XX_Ext_Oth    ,
+         XX_Ext_Rec    ,
+         XX_Ext_MD     ,
+         XX_SH_LT      ,
+         XX_SH_MD      ,Page 3  (VOYAGER MATRIX) Model Run
+Wasatch Front Regional Council
+-----------------------------------
+         XX_SH_HV      ,
+         XX_LH_MD      ,
+         XX_LH_HV
+
+
+
+    ;set MATRIX parameters
+    ZONES = 3629
+
+
+
+    ;assign work matricesTotal
+    mw[101] = mi.1.Total               ;Total
+    mw[102] = mi.1.Pass_LT             ;Pass_LT
+    mw[103] = mi.1.MD_Truck            ;MD_Truck
+    mw[104] = mi.1.HV_Truck            ;HV_Truck
+    mw[105] = mi.1.II_LH_MD            ;II_LH_MD
+    mw[106] = mi.1.II_LH_HV            ;II_LH_HV
+    mw[107] = mi.1.IX_HBW              ;IX_HBW
+    mw[108] = mi.1.IX_HBO              ;IX_HBO
+    mw[109] = mi.1.IX_NHB              ;IX_NHB
+    mw[110] = mi.1.IX_HBS              ;IX_HBS
+    mw[111] = mi.1.IX_HBC              ;IX_HBC
+    mw[112] = mi.1.IX_REC              ;IX_REC
+    mw[113] = mi.1.IX_Ext_Bus          ;IX_Ext_Bus
+    mw[114] = mi.1.IX_Ext_Oth          ;IX_Ext_Oth
+    mw[115] = mi.1.IX_Ext_Rec          ;IX_Ext_Rec
+    mw[116] = mi.1.IX_Ext_MD           ;IX_Ext_MD
+    mw[117] = mi.1.IX_SH_LT            ;IX_SH_LT
+    mw[118] = mi.1.IX_SH_MD            ;IX_SH_MD
+    mw[119] = mi.1.IX_SH_HV            ;IX_SH_HV
+    mw[120] = mi.1.IX_LH_MD            ;IX_LH_MD
+    mw[121] = mi.1.IX_LH_HV            ;IX_LH_HV
+    mw[122] = mi.1.XI_HBW              ;XI_HBW
+    mw[123] = mi.1.XI_HBO              ;XI_HBO
+    mw[124] = mi.1.XI_NHB              ;XI_NHB
+    mw[125] = mi.1.XI_HBS              ;XI_HBS
+    mw[126] = mi.1.XI_HBC              ;XI_HBC
+    mw[127] = mi.1.XI_REC              ;XI_REC
+    mw[128] = mi.1.XI_Ext_Bus          ;XI_Ext_Bus
+    mw[129] = mi.1.XI_Ext_Oth          ;XI_Ext_Oth
+    mw[130] = mi.1.XI_Ext_Rec          ;XI_Ext_Rec
+    mw[131] = mi.1.XI_Ext_MD           ;XI_Ext_MD
+    mw[132] = mi.1.XI_SH_LT            ;XI_SH_LT
+    mw[133] = mi.1.XI_SH_MD            ;XI_SH_MD
+    mw[134] = mi.1.XI_SH_HV            ;XI_SH_HV
+    mw[135] = mi.1.XI_LH_MD            ;XI_LH_MD
+    mw[136] = mi.1.XI_LH_HV            ;XI_LH_HV
+    mw[137] = mi.1.XX_HBW              ;XX_HBW
+    mw[138] = mi.1.XX_HBO              ;XX_HBO
+    mw[139] = mi.1.XX_NHB              ;XX_NHB
+    mw[140] = mi.1.XX_HBS              ;XX_HBS
+    mw[141] = mi.1.XX_HBC              ;XX_HBC
+    mw[142] = mi.1.XX_REC              ;XX_RECPage 4  (VOYAGER MATRIX) Model Run
+Wasatch Front Regional Council
+-----------------------------------
+    mw[143] = mi.1.XX_Ext_Bus          ;XX_Ext_Bus
+    mw[144] = mi.1.XX_Ext_Oth          ;XX_Ext_Oth
+    mw[145] = mi.1.XX_Ext_Rec          ;XX_Ext_Rec
+    mw[146] = mi.1.XX_Ext_MD           ;XX_Ext_MD
+    mw[147] = mi.1.XX_SH_LT            ;XX_SH_LT
+    mw[148] = mi.1.XX_SH_MD            ;XX_SH_MD
+    mw[149] = mi.1.XX_SH_HV            ;XX_SH_HV
+    mw[150] = mi.1.XX_LH_MD            ;XX_LH_MD
+    mw[151] = mi.1.XX_LH_HV            ;XX_LH_HV
+
+
+
+    ;renumber working matrices
+    RENUMBER FILE='renumber.txt', missingzi=m, missingzo=m
+
+
+MATRIX Stack Size = 5228 bytes.
+................................................................................
+
+
+MATI[1] TPP WF_External - 2019\WF_ExtTripTable_DY.mtx Opened
+MAT PGM=MATRIX (v.08/03/2017 [6.4.3 x64])  DATE=Fri Jan 25 14:43:53 2019 
+ID=
+PAR Zones=2881 M=51
+  Total  Pass_LT  MD_Truck  HV_Truck  II_LH_MD  II_LH_HV  IX_HBW  IX_HBO  IX_NHB  IX_HBS  IX_HBC
+  IX_REC  IX_Ext_Bus  IX_Ext_Oth  IX_Ext_Rec  IX_Ext_MD  IX_SH_LT  IX_SH_MD  IX_SH_HV  IX_LH_MD
+  IX_LH_HV  XI_HBW  XI_HBO  XI_NHB  XI_HBS  XI_HBC  XI_REC  XI_Ext_Bus  XI_Ext_Oth  XI_Ext_Rec
+  XI_Ext_MD  XI_SH_LT  XI_SH_MD  XI_SH_HV  XI_LH_MD  XI_LH_HV  XX_HBW  XX_HBO  XX_NHB  XX_HBS
+  XX_HBC  XX_REC  XX_Ext_Bus  XX_Ext_Oth  XX_Ext_Rec  XX_Ext_MD  XX_SH_LT  XX_SH_MD  XX_SH_HV
+  XX_LH_MD  XX_LH_HV
+
+M(665): O/P Zones unassigned: 22 44 58 72-73 75 77 79-81 98 144-154 156 160-161 163 165-166 168-172
+M(665):  175-180 187 190 194 200 205-206 208 210-212 216-219 222-223 225-226
+M(665):  229-230 232-233 237-238 241 244 247-250 253 256 258-259 264-268 270
+M(665):  275-277 280 286-287 290-291 294 301 303-306 308 310 315 322-323 327 334
+M(665):  339 341 343 349-352 354-355 357-359 362 364 384-385 406-407 410 412 420
+M(665):  428 430 434-435 443 445-447 464-466 468 471 474 478-479 481-484 487-491
+M(665):  493 495 500 503 507-508 513 519 527-528 531 536-537 544 550 552-553 555
+M(665):  559 563 566-567 574 576-581 583-584 586-588 590 592-593 597 599 601-603
+M(665):  626 630 632 634-635 642 651-652 656 658-659 663 671-673 676 678 683 685
+M(665):  688 694 696 700 709-712 714 718-719 725-726 732-733 737 740-741 745-746
+M(665):  749 752-753 765-766 770 774 792 815 821 823 835 837 839 845-846 849 851
+M(665):  856 860-861 865 869 873-874 878-881 885 887-888 891-892 896-897 899-905
+M(665):  910 912 922 930 933 935-936 948 954 956 960 968-970 983 989 1010 1018
+M(665):  1020 1038 1046 1052 1059-1061 1063 1102 1106 1110-1111 1113 1174 1176
+M(665):  1179 1181 1184-1185 1216 1219 1221-1224 1244 1246 1249 1251 1279 1317
+M(665):  1332 1335 1343 1360-1362 1374 1387 1411 1421 1430 1436 1444 1461 1465
+M(665):  1474 1483 1485 1488-1490 1493 1496-1497 1503 1506 1516 1518 1522-1524
+M(665):  1526 1535 1540 1542 1544-1545 1547 1552 1555 1561-1562 1565-1566
+M(665):  1568-1569 1572 1576-1577 1592-1594 1599 1608 1610 1612 1621 1636 1642
+M(665):  1656 1658 1698 1700 1703-1704 1708 1710 1712 1715-1717 1731-1734 1736
+M(665):  1739 1751 1757-1759 1784 1793 1798-1799 1807-1808 1810 1819-1821 1830
+M(665):  1832 1838 1846 1849-1851 1859 1864 1892 1896 1900 1902 1907 1912-1914
+M(665):  1917 1919 1925-1926 1936-1937 1941 1943 1953 1965 1969 1971 1978-1979Page 5  (VOYAGER MATRIX) Model Run
+Wasatch Front Regional Council
+-----------------------------------
+M(665):  1988 1990 1999 2005 2017 2019 2025-2027 2034-2035 2039-2041 2043
+M(665):  2045-2047 2049 2052 2054-2055 2062 2068 2072 2075 2083 2085 2087 2089
+M(665):  2091 2096 2100 2112 2115 2119 2122 2128 2130-2131 2134 2138 2141
+M(665):  2143-2144 2150-2151 2155-2157 2160-2161 2168 2170 2177 2179 2183-2184
+M(665):  2187-2201 2203-2215 2218 2222 2225-2229 2234-2238 2240 2243-2244 2247
+M(665):  2249-2252 2255 2258-2260 2262-2263 2265 2267-2270 2274 2278-2282 2285
+M(665):  2287-2291 2294 2296-2297 2299 2302-2305 2307-2309 2311 2315 2318-2319
+M(665):  2321 2324 2327 2335 2337 2339 2341 2343-2344 2346-2347 2349-2350 2356
+M(665):  2380-2381 2388-2389 2395-2396 2398 2400-2401 2404 2407 2411-2412
+M(665):  2414-2416 2422 2441 2444 2447 2449 2471 2480 2482-2483 2487-2488 2506
+M(665):  2517 2555 2587-2588 2590-2591 2595 2611 2633 2701 2715 2720 2727 2772
+M(665):  2774 2777 2798 2849 2867 2879 2881 2883 2917 2921-2922 2950 2965 2987
+M(665):  2991 3012 3020 3048 3050 3081 3103 3105 3110 3114-3115 3120-3121 3125
+M(665):  3133 3137 3157 3159 3181 3216-3217 3220 3223 3234 3239 3241-3246 3250
+M(665):  3252-3254 3256-3261 3263-3264 3266-3267 3270 3272-3273 3275-3278 3280
+M(665):  3282-3284 3286-3287 3293 3295 3297-3300 3302-3304 3306 3309 3312-3313
+M(665):  3317 3326 3330 3334 3349 3381 3391-3392 3397 3456 3470 3497-3522
+M(665):  3526-3530 3532-3600
+
+M(664): I/P Zones (total <> 100): 139(200) 2876(600) 2878(200) 2880(200) 2882-3629(0)Page 6  (VOYAGER MATRIX) Model Run
+Wasatch Front Regional Council
+-----------------------------------
+
+Totals after Iteration 1 I loop:
+
+	MI.01.TOTAL     : 312,246.3 
+	MI.01.PASS_LT   : 211,679.17
+	MI.01.MD_TRUCK  :  46,602   
+	MI.01.HV_TRUCK  :  53,965.13
+	MI.01.II_LH_MD  :         --
+	MI.01.II_LH_HV  :         --
+	MI.01.IX_HBW    :  41,145.2 
+	MI.01.IX_HBO    :  23,464.05
+	MI.01.IX_NHB    :  16,290.2 
+	MI.01.IX_HBS    :      73.1 
+	MI.01.IX_HBC    :         --
+	MI.01.IX_REC    :   2,189.04
+	MI.01.IX_EXT_BUS:   1,895.51
+	MI.01.IX_EXT_OTH:   3,974.24
+	MI.01.IX_EXT_REC:   3,439.91
+	MI.01.IX_EXT_MD :   3,238.68
+	MI.01.IX_SH_LT  :   3,953.19
+	MI.01.IX_SH_MD  :  14,123.98
+	MI.01.IX_SH_HV  :   7,567.24
+	MI.01.IX_LH_MD  :         --
+	MI.01.IX_LH_HV  :  10,685.47
+	MI.01.XI_HBW    :  38,179.78
+	MI.01.XI_HBO    :  20,719.43
+	MI.01.XI_NHB    :  18,217.67
+	MI.01.XI_HBS    :      34.27
+	MI.01.XI_HBC    :         --
+	MI.01.XI_REC    :         --
+	MI.01.XI_EXT_BUS:   2,012.79
+	MI.01.XI_EXT_OTH:   4,014.67
+	MI.01.XI_EXT_REC:         --
+	MI.01.XI_EXT_MD :   3,234.53
+	MI.01.XI_SH_LT  :   9,806.95
+	MI.01.XI_SH_MD  :  22,624.18
+	MI.01.XI_SH_HV  :  12,504.58
+	MI.01.XI_LH_MD  :         --
+	MI.01.XI_LH_HV  :  10,334.2 
+	MI.01.XX_HBW    :   4,187.14
+	MI.01.XX_HBO    :   2,786.7 
+	MI.01.XX_NHB    :   2,331.94
+	MI.01.XX_HBS    :         --
+	MI.01.XX_HBC    :         --
+	MI.01.XX_REC    :     264.6 
+	MI.01.XX_EXT_BUS:   2,052.03
+	MI.01.XX_EXT_OTH:   4,773.01
+	MI.01.XX_EXT_REC:   5,772.47
+	MI.01.XX_EXT_MD :   2,840.43
+	MI.01.XX_SH_LT  :     101.28
+	MI.01.XX_SH_MD  :     540.2 
+	MI.01.XX_SH_HV  :     295.5 
+	MI.01.XX_LH_MD  :         --
+	MI.01.XX_LH_HV  :  12,578.14Page 7  (VOYAGER MATRIX) Model Run
+Wasatch Front Regional Council
+-----------------------------------
+	MW[101]         : 312,246.3 
+	MW[102]         : 211,679.17
+	MW[103]         :  46,602   
+	MW[104]         :  53,965.13
+	MW[105]         :         --
+	MW[106]         :         --
+	MW[107]         :  41,145.2 
+	MW[108]         :  23,464.05
+	MW[109]         :  16,290.2 
+	MW[110]         :      73.1 
+	MW[111]         :         --
+	MW[112]         :   2,189.04
+	MW[113]         :   1,895.51
+	MW[114]         :   3,974.24
+	MW[115]         :   3,439.91
+	MW[116]         :   3,238.68
+	MW[117]         :   3,953.19
+	MW[118]         :  14,123.98
+	MW[119]         :   7,567.24
+	MW[120]         :         --
+	MW[121]         :  10,685.47
+	MW[122]         :  38,179.78
+	MW[123]         :  20,719.43
+	MW[124]         :  18,217.67
+	MW[125]         :      34.27
+	MW[126]         :         --
+	MW[127]         :         --
+	MW[128]         :   2,012.79
+	MW[129]         :   4,014.67
+	MW[130]         :         --
+	MW[131]         :   3,234.53
+	MW[132]         :   9,806.95
+	MW[133]         :  22,624.18
+	MW[134]         :  12,504.58
+	MW[135]         :         --
+	MW[136]         :  10,334.2 
+	MW[137]         :   4,187.14
+	MW[138]         :   2,786.7 
+	MW[139]         :   2,331.94
+	MW[140]         :         --
+	MW[141]         :         --
+	MW[142]         :     264.6 
+	MW[143]         :   2,052.03
+	MW[144]         :   4,773.01
+	MW[145]         :   5,772.47
+	MW[146]         :   2,840.43
+	MW[147]         :     101.28
+	MW[148]         :     540.2 
+	MW[149]         :     295.5 
+	MW[150]         :         --
+	MW[151]         :  12,578.14
+
+Total RENUMBER bytes saved to 1 temporary files: 22,380,883.Page 8  (VOYAGER MATRIX) Model Run
+Wasatch Front Regional Council
+-----------------------------------
+
+Totals following Renumber:
+
+	MW[101]  : 319,055.99   @J=I:     154.86
+	MW[102]  : 216,510.49   @J=I:     154.36
+	MW[103]  :  47,690.53   @J=I:       0.34
+	MW[104]  :  54,854.97   @J=I:       0.16
+	MW[105]  :         --
+	MW[106]  :         --
+	MW[107]  :  41,809.77
+	MW[108]  :  24,199.22
+	MW[109]  :  16,517.59
+	MW[110]  :      88.34
+	MW[111]  :         --
+	MW[112]  :   2,189.04
+	MW[113]  :   1,901.75
+	MW[114]  :   3,984.63
+	MW[115]  :   3,462.87
+	MW[116]  :   3,258.11
+	MW[117]  :   4,206.71
+	MW[118]  :  14,537.08
+	MW[119]  :   7,791.64
+	MW[120]  :         --
+	MW[121]  :  10,753.65
+	MW[122]  :  39,309.28
+	MW[123]  :  21,395.74
+	MW[124]  :  18,457.03
+	MW[125]  :      34.27
+	MW[126]  :         --
+	MW[127]  :         --
+	MW[128]  :   2,020.38
+	MW[129]  :   4,025.3 
+	MW[130]  :         --
+	MW[131]  :   3,254.77
+	MW[132]  :  10,174.03
+	MW[133]  :  23,187.25
+	MW[134]  :  12,817.32
+	MW[135]  :         --
+	MW[136]  :  10,399.28
+	MW[137]  :   4,357.32   @J=I:     145.87
+	MW[138]  :   2,957.56   @J=I:       4.81
+	MW[139]  :   2,423.76   @J=I:       3.32
+	MW[140]  :         --
+	MW[141]  :         --
+	MW[142]  :     269.38   @J=I:       0.05
+	MW[143]  :   2,053.32
+	MW[144]  :   4,776.89
+	MW[145]  :   5,780.47
+	MW[146]  :   2,848.82
+	MW[147]  :     115.84   @J=I:       0.31
+	MW[148]  :     604.5    @J=I:       0.34
+	MW[149]  :     330.76   @J=I:       0.14
+	MW[150]  :         --
+	MW[151]  :  12,762.32   @J=I:       0.02Page 9  (VOYAGER MATRIX) Model Run
+Wasatch Front Regional Council
+-----------------------------------
+	MO.01.001: 319,055.99
+	MO.01.002: 216,510.49
+	MO.01.003:  47,690.53
+	MO.01.004:  54,854.97
+	MO.01.007:  41,809.77
+	MO.01.008:  24,199.22
+	MO.01.009:  16,517.59
+	MO.01.010:      88.34
+	MO.01.012:   2,189.04
+	MO.01.013:   1,901.75
+	MO.01.014:   3,984.63
+	MO.01.015:   3,462.87
+	MO.01.016:   3,258.11
+	MO.01.017:   4,206.71
+	MO.01.018:  14,537.08
+	MO.01.019:   7,791.64
+	MO.01.021:  10,753.65
+	MO.01.022:  39,309.28
+	MO.01.023:  21,395.74
+	MO.01.024:  18,457.03
+	MO.01.025:      34.27
+	MO.01.028:   2,020.38
+	MO.01.029:   4,025.3 
+	MO.01.031:   3,254.77
+	MO.01.032:  10,174.03
+	MO.01.033:  23,187.25
+	MO.01.034:  12,817.32
+	MO.01.036:  10,399.28
+	MO.01.037:   4,357.32
+	MO.01.038:   2,957.56
+	MO.01.039:   2,423.76
+	MO.01.042:     269.38
+	MO.01.043:   2,053.32
+	MO.01.044:   4,776.89
+	MO.01.045:   5,780.47
+	MO.01.046:   2,848.82
+	MO.01.047:     115.84
+	MO.01.048:     604.5 
+	MO.01.049:     330.76
+	MO.01.051:  12,762.32
+
+MATRIX   ReturnCode = 0  Elapsed Time = 00:03:25
+################################################################################
+
+
+VOYAGER  ReturnCode = 0  Elapsed Time = 00:03:26
