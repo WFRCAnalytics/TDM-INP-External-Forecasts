@@ -1,0 +1,6 @@
+No valid data for externalid: 3610, segid: 2688_005.5, Projection Group: Since 1981. Filling zeros.
+No valid data for externalid: 3619, segid: 3108_000.0, Projection Group: Since 1981. Filling zeros.
+No valid data for externalid: 3621, segid: 2865_019.4, Projection Group: Since 1981. Filling zeros.
+No valid data for externalid: 3622, segid: 2863_000.0, Projection Group: Since 1981. Filling zeros.
+No valid data for externalid: 3625, segid: 2495_000.0, Projection Group: Since 1981. Filling zeros.
+No valid data for externalid: 3627, segid: 1822_000.0, Projection Group: Since 1981. Filling zeros.
