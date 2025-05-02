@@ -1,4 +1,4 @@
-externalid,segid,PROJ_GRP,year,LIN_FORECAST
+externalid,segid,PROJ_GRP,year,linear_forecast
 3601,1082_000.0,Since 1981,1981,-26
 3601,1082_000.0,Since 1981,2027,890
 3601,1082_000.0,Since 1981,2032,989
