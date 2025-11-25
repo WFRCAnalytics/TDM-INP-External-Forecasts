@@ -1,0 +1,178 @@
+externalid,PROJ_GRP,linear_forecast_notes,segid,year,linear_forecast,name,external,manual_adj,final_forecast
+3601,Since 2003,as early as there is data,1082_000.0,2027,890,FAR-1082 Bird Refuge,Ext # 3601 - FAR-1082 Bird Refuge,,900
+3601,Since 2003,as early as there is data,1082_000.0,2032,989,FAR-1082 Bird Refuge,Ext # 3601 - FAR-1082 Bird Refuge,,1000
+3601,Since 2003,as early as there is data,1082_000.0,2036,1069,FAR-1082 Bird Refuge,Ext # 3601 - FAR-1082 Bird Refuge,,1100
+3601,Since 2003,as early as there is data,1082_000.0,2046,1268,FAR-1082 Bird Refuge,Ext # 3601 - FAR-1082 Bird Refuge,,1300
+3601,Since 2003,as early as there is data,1082_000.0,2055,1447,FAR-1082 Bird Refuge,Ext # 3601 - FAR-1082 Bird Refuge,,1400
+3601,Since 2003,as early as there is data,1082_000.0,2060,1546,FAR-1082 Bird Refuge,Ext # 3601 - FAR-1082 Bird Refuge,,1500
+3602,Since 1981,"as early as there is data, and trying not to get too high when using 2002 or higher",0013_006.5,2027,10557,SR-13/83 to Corinne,Ext # 3602 - SR-13/83 to Corinne,500.0,11000
+3602,Since 1981,"as early as there is data, and trying not to get too high when using 2002 or higher",0013_006.5,2032,11284,SR-13/83 to Corinne,Ext # 3602 - SR-13/83 to Corinne,300.0,11500
+3602,Since 1981,"as early as there is data, and trying not to get too high when using 2002 or higher",0013_006.5,2036,11865,SR-13/83 to Corinne,Ext # 3602 - SR-13/83 to Corinne,200.0,12000
+3602,Since 1981,"as early as there is data, and trying not to get too high when using 2002 or higher",0013_006.5,2046,13318,SR-13/83 to Corinne,Ext # 3602 - SR-13/83 to Corinne,100.0,13500
+3602,Since 1981,"as early as there is data, and trying not to get too high when using 2002 or higher",0013_006.5,2055,14625,SR-13/83 to Corinne,Ext # 3602 - SR-13/83 to Corinne,,14500
+3602,Since 1981,"as early as there is data, and trying not to get too high when using 2002 or higher",0013_006.5,2060,15352,SR-13/83 to Corinne,Ext # 3602 - SR-13/83 to Corinne,,15500
+3603,Since 2016,trying to split difference between forecast using earlier data and forecast using 2020+ data,1112_000.0,2027,1582,FAR-1112 to Bear River,Ext # 3603 - FAR-1112 to Bear River,,1600
+3603,Since 2016,trying to split difference between forecast using earlier data and forecast using 2020+ data,1112_000.0,2032,1718,FAR-1112 to Bear River,Ext # 3603 - FAR-1112 to Bear River,,1700
+3603,Since 2016,trying to split difference between forecast using earlier data and forecast using 2020+ data,1112_000.0,2036,1827,FAR-1112 to Bear River,Ext # 3603 - FAR-1112 to Bear River,,1800
+3603,Since 2016,trying to split difference between forecast using earlier data and forecast using 2020+ data,1112_000.0,2046,2099,FAR-1112 to Bear River,Ext # 3603 - FAR-1112 to Bear River,,2100
+3603,Since 2016,trying to split difference between forecast using earlier data and forecast using 2020+ data,1112_000.0,2055,2344,FAR-1112 to Bear River,Ext # 3603 - FAR-1112 to Bear River,,2300
+3603,Since 2016,trying to split difference between forecast using earlier data and forecast using 2020+ data,1112_000.0,2060,2481,FAR-1112 to Bear River,Ext # 3603 - FAR-1112 to Bear River,,2500
+3604,Since 1981,"as early as there is data, trend looks pretty consistent over time",0015_368.1,2027,32376,I-15 to Tremonton,Ext # 3604 - I-15 to Tremonton,,32500
+3604,Since 1981,"as early as there is data, trend looks pretty consistent over time",0015_368.1,2032,34825,I-15 to Tremonton,Ext # 3604 - I-15 to Tremonton,,35000
+3604,Since 1981,"as early as there is data, trend looks pretty consistent over time",0015_368.1,2036,36783,I-15 to Tremonton,Ext # 3604 - I-15 to Tremonton,,37000
+3604,Since 1981,"as early as there is data, trend looks pretty consistent over time",0015_368.1,2046,41680,I-15 to Tremonton,Ext # 3604 - I-15 to Tremonton,,41500
+3604,Since 1981,"as early as there is data, trend looks pretty consistent over time",0015_368.1,2055,46087,I-15 to Tremonton,Ext # 3604 - I-15 to Tremonton,,46000
+3604,Since 1981,"as early as there is data, trend looks pretty consistent over time",0015_368.1,2060,48535,I-15 to Tremonton,Ext # 3604 - I-15 to Tremonton,,48500
+3605,Since 2002,earlier data jumps areound too much,0038_003.2,2027,3728,SR-38 to Riverside,Ext # 3605 - SR-38 to Riverside,100.0,3800
+3605,Since 2002,earlier data jumps areound too much,0038_003.2,2032,4002,SR-38 to Riverside,Ext # 3605 - SR-38 to Riverside,,4000
+3605,Since 2002,earlier data jumps areound too much,0038_003.2,2036,4222,SR-38 to Riverside,Ext # 3605 - SR-38 to Riverside,,4200
+3605,Since 2002,earlier data jumps areound too much,0038_003.2,2046,4770,SR-38 to Riverside,Ext # 3605 - SR-38 to Riverside,,4800
+3605,Since 2002,earlier data jumps areound too much,0038_003.2,2055,5263,SR-38 to Riverside,Ext # 3605 - SR-38 to Riverside,,5300
+3605,Since 2002,earlier data jumps areound too much,0038_003.2,2060,5537,SR-38 to Riverside,Ext # 3605 - SR-38 to Riverside,,5500
+3606,Since 1981,"as early as there is data, trend looks pretty consistent over time",0091_010.1,2027,22804,SR-91 to Logan,Ext # 3606 - SR-91 to Logan,,23000
+3606,Since 1981,"as early as there is data, trend looks pretty consistent over time",0091_010.1,2032,24575,SR-91 to Logan,Ext # 3606 - SR-91 to Logan,,24500
+3606,Since 1981,"as early as there is data, trend looks pretty consistent over time",0091_010.1,2036,25992,SR-91 to Logan,Ext # 3606 - SR-91 to Logan,,26000
+3606,Since 1981,"as early as there is data, trend looks pretty consistent over time",0091_010.1,2046,29534,SR-91 to Logan,Ext # 3606 - SR-91 to Logan,,29500
+3606,Since 1981,"as early as there is data, trend looks pretty consistent over time",0091_010.1,2055,32722,SR-91 to Logan,Ext # 3606 - SR-91 to Logan,,32500
+3606,Since 1981,"as early as there is data, trend looks pretty consistent over time",0091_010.1,2060,34493,SR-91 to Logan,Ext # 3606 - SR-91 to Logan,,34500
+3607,Since 2007,data does not look consistent till 2007,3462_002.8,2027,2403,FAR-3462 N Ogden Pass,Ext # 3607 - FAR-3462 N Ogden Pass,,2400
+3607,Since 2007,data does not look consistent till 2007,3462_002.8,2032,2622,FAR-3462 N Ogden Pass,Ext # 3607 - FAR-3462 N Ogden Pass,,2600
+3607,Since 2007,data does not look consistent till 2007,3462_002.8,2036,2798,FAR-3462 N Ogden Pass,Ext # 3607 - FAR-3462 N Ogden Pass,,2800
+3607,Since 2007,data does not look consistent till 2007,3462_002.8,2046,3236,FAR-3462 N Ogden Pass,Ext # 3607 - FAR-3462 N Ogden Pass,,3200
+3607,Since 2007,data does not look consistent till 2007,3462_002.8,2055,3630,FAR-3462 N Ogden Pass,Ext # 3607 - FAR-3462 N Ogden Pass,,3600
+3607,Since 2007,data does not look consistent till 2007,3462_002.8,2060,3849,FAR-3462 N Ogden Pass,Ext # 3607 - FAR-3462 N Ogden Pass,,3800
+3608,Since 1981,"as early as there is data, trend looks pretty consistent over time",0039_008.7,2027,9261,SR-39 Ogden Canyon,Ext # 3608 - SR-39 Ogden Canyon,100.0,9400
+3608,Since 1981,"as early as there is data, trend looks pretty consistent over time",0039_008.7,2032,9609,SR-39 Ogden Canyon,Ext # 3608 - SR-39 Ogden Canyon,,9600
+3608,Since 1981,"as early as there is data, trend looks pretty consistent over time",0039_008.7,2036,9888,SR-39 Ogden Canyon,Ext # 3608 - SR-39 Ogden Canyon,,9900
+3608,Since 1981,"as early as there is data, trend looks pretty consistent over time",0039_008.7,2046,10585,SR-39 Ogden Canyon,Ext # 3608 - SR-39 Ogden Canyon,,10500
+3608,Since 1981,"as early as there is data, trend looks pretty consistent over time",0039_008.7,2055,11212,SR-39 Ogden Canyon,Ext # 3608 - SR-39 Ogden Canyon,,11000
+3608,Since 1981,"as early as there is data, trend looks pretty consistent over time",0039_008.7,2060,11561,SR-39 Ogden Canyon,Ext # 3608 - SR-39 Ogden Canyon,,11500
+3609,Since 1981,"as early as there is data, trend looks pretty consistent over time",0084_087.8,2027,25317,I-84 to Summit,Ext # 3609 - I-84 to Summit,,25500
+3609,Since 1981,"as early as there is data, trend looks pretty consistent over time",0084_087.8,2032,27908,I-84 to Summit,Ext # 3609 - I-84 to Summit,,28000
+3609,Since 1981,"as early as there is data, trend looks pretty consistent over time",0084_087.8,2036,29982,I-84 to Summit,Ext # 3609 - I-84 to Summit,,30000
+3609,Since 1981,"as early as there is data, trend looks pretty consistent over time",0084_087.8,2046,35165,I-84 to Summit,Ext # 3609 - I-84 to Summit,,35000
+3609,Since 1981,"as early as there is data, trend looks pretty consistent over time",0084_087.8,2055,39830,I-84 to Summit,Ext # 3609 - I-84 to Summit,,40000
+3609,Since 1981,"as early as there is data, trend looks pretty consistent over time",0084_087.8,2060,42421,I-84 to Summit,Ext # 3609 - I-84 to Summit,,42500
+3610,No Data,,2688_005.5,2027,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,100.0,100
+3610,No Data,,2688_005.5,2027,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,100.0,100
+3610,No Data,,2688_005.5,2027,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,100.0,100
+3610,No Data,,2688_005.5,2027,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,100.0,100
+3610,No Data,,2688_005.5,2032,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,100.0,100
+3610,No Data,,2688_005.5,2036,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,100.0,100
+3610,No Data,,2688_005.5,2046,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,150.0,150
+3610,No Data,,2688_005.5,2055,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,150.0,150
+3610,No Data,,2688_005.5,2060,0,FAR-2688 Butterfield Cyn to Tooele,Ext # 3610 - FAR-2688 Butterfield Cyn to Tooele,200.0,200
+3611,Since 1981,"as early as there is data, trend looks pretty consistent over time",0201_000.0,2027,19319,SR-201 to Tooele,Ext # 3611 - SR-201 to Tooele,,19500
+3611,Since 1981,"as early as there is data, trend looks pretty consistent over time",0201_000.0,2032,20769,SR-201 to Tooele,Ext # 3611 - SR-201 to Tooele,,21000
+3611,Since 1981,"as early as there is data, trend looks pretty consistent over time",0201_000.0,2036,21929,SR-201 to Tooele,Ext # 3611 - SR-201 to Tooele,,22000
+3611,Since 1981,"as early as there is data, trend looks pretty consistent over time",0201_000.0,2046,24828,SR-201 to Tooele,Ext # 3611 - SR-201 to Tooele,,25000
+3611,Since 1981,"as early as there is data, trend looks pretty consistent over time",0201_000.0,2055,27437,SR-201 to Tooele,Ext # 3611 - SR-201 to Tooele,,27500
+3611,Since 1981,"as early as there is data, trend looks pretty consistent over time",0201_000.0,2060,28887,SR-201 to Tooele,Ext # 3611 - SR-201 to Tooele,,29000
+3612,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_101.5,2027,51939,I-80 to Tooele,Ext # 3612 - I-80 to Tooele,4000.0,56000
+3612,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_101.5,2032,56091,I-80 to Tooele,Ext # 3612 - I-80 to Tooele,2000.0,58000
+3612,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_101.5,2036,59411,I-80 to Tooele,Ext # 3612 - I-80 to Tooele,1000.0,60500
+3612,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_101.5,2046,67714,I-80 to Tooele,Ext # 3612 - I-80 to Tooele,,67500
+3612,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_101.5,2055,75186,I-80 to Tooele,Ext # 3612 - I-80 to Tooele,,75000
+3612,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_101.5,2060,79337,I-80 to Tooele,Ext # 3612 - I-80 to Tooele,,79500
+3613,Since 2009,pre 2009 data is much higher than post 2009 data,0065_008.4,2027,506,SR-65 Mountain Dell Canyon,Ext # 3613 - SR-65 Mountain Dell Canyon,50.0,550
+3613,Since 2009,pre 2009 data is much higher than post 2009 data,0065_008.4,2032,533,SR-65 Mountain Dell Canyon,Ext # 3613 - SR-65 Mountain Dell Canyon,0.0,550
+3613,Since 2009,pre 2009 data is much higher than post 2009 data,0065_008.4,2036,554,SR-65 Mountain Dell Canyon,Ext # 3613 - SR-65 Mountain Dell Canyon,0.0,550
+3613,Since 2009,pre 2009 data is much higher than post 2009 data,0065_008.4,2046,609,SR-65 Mountain Dell Canyon,Ext # 3613 - SR-65 Mountain Dell Canyon,0.0,600
+3613,Since 2009,pre 2009 data is much higher than post 2009 data,0065_008.4,2055,657,SR-65 Mountain Dell Canyon,Ext # 3613 - SR-65 Mountain Dell Canyon,0.0,650
+3613,Since 2009,pre 2009 data is much higher than post 2009 data,0065_008.4,2060,684,SR-65 Mountain Dell Canyon,Ext # 3613 - SR-65 Mountain Dell Canyon,,700
+3614,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_138.9,2027,65666,I-80 East Parley's,Ext # 3614 - I-80 East Parley's,,65500
+3614,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_138.9,2032,70892,I-80 East Parley's,Ext # 3614 - I-80 East Parley's,,71000
+3614,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_138.9,2036,75073,I-80 East Parley's,Ext # 3614 - I-80 East Parley's,,75000
+3614,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_138.9,2046,85526,I-80 East Parley's,Ext # 3614 - I-80 East Parley's,,85500
+3614,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_138.9,2055,94933,I-80 East Parley's,Ext # 3614 - I-80 East Parley's,,95000
+3614,Since 1981,"as early as there is data, trend looks pretty consistent over time",0080_138.9,2060,100160,I-80 East Parley's,Ext # 3614 - I-80 East Parley's,,100000
+3615,Since 2007,erratic data. 2007 tries to split difference between 2004-2012 data and 2013-2023 data,0190_015.75,2027,2567,SR-190 Guardsman Pass,Ext # 3615 - SR-190 Guardsman Pass,-2050.0,500
+3615,Since 2007,erratic data. 2007 tries to split difference between 2004-2012 data and 2013-2023 data,0190_015.75,2032,2728,SR-190 Guardsman Pass,Ext # 3615 - SR-190 Guardsman Pass,-2200.0,550
+3615,Since 2007,erratic data. 2007 tries to split difference between 2004-2012 data and 2013-2023 data,0190_015.75,2036,2857,SR-190 Guardsman Pass,Ext # 3615 - SR-190 Guardsman Pass,-2300.0,550
+3615,Since 2007,erratic data. 2007 tries to split difference between 2004-2012 data and 2013-2023 data,0190_015.75,2046,3179,SR-190 Guardsman Pass,Ext # 3615 - SR-190 Guardsman Pass,-2600.0,600
+3615,Since 2007,erratic data. 2007 tries to split difference between 2004-2012 data and 2013-2023 data,0190_015.75,2055,3469,SR-190 Guardsman Pass,Ext # 3615 - SR-190 Guardsman Pass,-2750.0,700
+3615,Since 2007,erratic data. 2007 tries to split difference between 2004-2012 data and 2013-2023 data,0190_015.75,2060,3630,SR-190 Guardsman Pass,Ext # 3615 - SR-190 Guardsman Pass,-2900.0,750
+3616,Since 2006,data pretty consistent since 2006,1828_004.5,2027,597,FAR-1828 Goshen Canyon,Ext # 3616 - FAR-1828 Goshen Canyon,,600
+3616,Since 2006,data pretty consistent since 2006,1828_004.5,2032,649,FAR-1828 Goshen Canyon,Ext # 3616 - FAR-1828 Goshen Canyon,,650
+3616,Since 2006,data pretty consistent since 2006,1828_004.5,2036,690,FAR-1828 Goshen Canyon,Ext # 3616 - FAR-1828 Goshen Canyon,,700
+3616,Since 2006,data pretty consistent since 2006,1828_004.5,2046,793,FAR-1828 Goshen Canyon,Ext # 3616 - FAR-1828 Goshen Canyon,,800
+3616,Since 2006,data pretty consistent since 2006,1828_004.5,2055,886,FAR-1828 Goshen Canyon,Ext # 3616 - FAR-1828 Goshen Canyon,,900
+3616,Since 2006,data pretty consistent since 2006,1828_004.5,2060,938,FAR-1828 Goshen Canyon,Ext # 3616 - FAR-1828 Goshen Canyon,,950
+3617,Since 2011,data pretty consistent since 2011,0006_140.3,2027,1722,US-6 Eureka,Ext # 3617 - US-6 Eureka,,1700
+3617,Since 2011,data pretty consistent since 2011,0006_140.3,2032,1917,US-6 Eureka,Ext # 3617 - US-6 Eureka,,1900
+3617,Since 2011,data pretty consistent since 2011,0006_140.3,2036,2073,US-6 Eureka,Ext # 3617 - US-6 Eureka,,2100
+3617,Since 2011,data pretty consistent since 2011,0006_140.3,2046,2462,US-6 Eureka,Ext # 3617 - US-6 Eureka,,2500
+3617,Since 2011,data pretty consistent since 2011,0006_140.3,2055,2813,US-6 Eureka,Ext # 3617 - US-6 Eureka,,2800
+3617,Since 2011,data pretty consistent since 2011,0006_140.3,2060,3008,US-6 Eureka,Ext # 3617 - US-6 Eureka,,3000
+3618,Since 2007,"data pretty consistent since 2007, but forecast from 1981 is much higher than 2007-2023 data",0073_015.5,2027,2204,SR-73 Rush Valley,Ext # 3618 - SR-73 Rush Valley,,2200
+3618,Since 2007,"data pretty consistent since 2007, but forecast from 1981 is much higher than 2007-2023 data",0073_015.5,2032,2405,SR-73 Rush Valley,Ext # 3618 - SR-73 Rush Valley,,2400
+3618,Since 2007,"data pretty consistent since 2007, but forecast from 1981 is much higher than 2007-2023 data",0073_015.5,2036,2566,SR-73 Rush Valley,Ext # 3618 - SR-73 Rush Valley,,2600
+3618,Since 2007,"data pretty consistent since 2007, but forecast from 1981 is much higher than 2007-2023 data",0073_015.5,2046,2968,SR-73 Rush Valley,Ext # 3618 - SR-73 Rush Valley,,3000
+3618,Since 2007,"data pretty consistent since 2007, but forecast from 1981 is much higher than 2007-2023 data",0073_015.5,2055,3330,SR-73 Rush Valley,Ext # 3618 - SR-73 Rush Valley,,3300
+3618,Since 2007,"data pretty consistent since 2007, but forecast from 1981 is much higher than 2007-2023 data",0073_015.5,2060,3531,SR-73 Rush Valley,Ext # 3618 - SR-73 Rush Valley,,3500
+3619,No Data,,3108_000.0,2027,0,FAR-3108 Cascade Springs,Ext # 3619 - FAR-3108 Cascade Springs,450.0,450
+3619,No Data,,3108_000.0,2032,0,FAR-3108 Cascade Springs,Ext # 3619 - FAR-3108 Cascade Springs,450.0,450
+3619,No Data,,3108_000.0,2036,0,FAR-3108 Cascade Springs,Ext # 3619 - FAR-3108 Cascade Springs,500.0,500
+3619,No Data,,3108_000.0,2046,0,FAR-3108 Cascade Springs,Ext # 3619 - FAR-3108 Cascade Springs,550.0,550
+3619,No Data,,3108_000.0,2055,0,FAR-3108 Cascade Springs,Ext # 3619 - FAR-3108 Cascade Springs,550.0,550
+3619,No Data,,3108_000.0,2060,0,FAR-3108 Cascade Springs,Ext # 3619 - FAR-3108 Cascade Springs,600.0,600
+3620,Since 1981,"as early as there is data, trend looks pretty consistent over time",0189_014.3,2027,13606,SR-189 Provo Canyon,Ext # 3620 - SR-189 Provo Canyon,500.0,14000
+3620,Since 1981,"as early as there is data, trend looks pretty consistent over time",0189_014.3,2032,14639,SR-189 Provo Canyon,Ext # 3620 - SR-189 Provo Canyon,,14500
+3620,Since 1981,"as early as there is data, trend looks pretty consistent over time",0189_014.3,2036,15465,SR-189 Provo Canyon,Ext # 3620 - SR-189 Provo Canyon,,15500
+3620,Since 1981,"as early as there is data, trend looks pretty consistent over time",0189_014.3,2046,17530,SR-189 Provo Canyon,Ext # 3620 - SR-189 Provo Canyon,,17500
+3620,Since 1981,"as early as there is data, trend looks pretty consistent over time",0189_014.3,2055,19389,SR-189 Provo Canyon,Ext # 3620 - SR-189 Provo Canyon,,19500
+3620,Since 1981,"as early as there is data, trend looks pretty consistent over time",0189_014.3,2060,20422,SR-189 Provo Canyon,Ext # 3620 - SR-189 Provo Canyon,,20500
+3621,No Data,,2865_019.4,2027,0,FAR-2865 Sixth Water / Horse Creek,Ext # 3621 - FAR-2865 Sixth Water / Horse Creek,350.0,350
+3621,No Data,,2865_019.4,2032,0,FAR-2865 Sixth Water / Horse Creek,Ext # 3621 - FAR-2865 Sixth Water / Horse Creek,350.0,350
+3621,No Data,,2865_019.4,2036,0,FAR-2865 Sixth Water / Horse Creek,Ext # 3621 - FAR-2865 Sixth Water / Horse Creek,400.0,400
+3621,No Data,,2865_019.4,2046,0,FAR-2865 Sixth Water / Horse Creek,Ext # 3621 - FAR-2865 Sixth Water / Horse Creek,400.0,400
+3621,No Data,,2865_019.4,2055,0,FAR-2865 Sixth Water / Horse Creek,Ext # 3621 - FAR-2865 Sixth Water / Horse Creek,450.0,450
+3621,No Data,,2865_019.4,2060,0,FAR-2865 Sixth Water / Horse Creek,Ext # 3621 - FAR-2865 Sixth Water / Horse Creek,450.0,450
+3622,No Data,,2863_000.0,2027,0,FAR-2863 Sheep Creek,Ext # 3622 - FAR-2863 Sheep Creek,150.0,150
+3622,No Data,,2863_000.0,2032,0,FAR-2863 Sheep Creek,Ext # 3622 - FAR-2863 Sheep Creek,150.0,150
+3622,No Data,,2863_000.0,2036,0,FAR-2863 Sheep Creek,Ext # 3622 - FAR-2863 Sheep Creek,150.0,150
+3622,No Data,,2863_000.0,2046,0,FAR-2863 Sheep Creek,Ext # 3622 - FAR-2863 Sheep Creek,200.0,200
+3622,No Data,,2863_000.0,2055,0,FAR-2863 Sheep Creek,Ext # 3622 - FAR-2863 Sheep Creek,200.0,200
+3622,No Data,,2863_000.0,2060,0,FAR-2863 Sheep Creek,Ext # 3622 - FAR-2863 Sheep Creek,200.0,200
+3623,Since 1981,"as early as there is data, trend looks pretty consistent over time. outlier in 1983 does not change the trend",0006_216.2,2027,10297,US-6 Price Canyon,Ext # 3623 - US-6 Price Canyon,500.0,11000
+3623,Since 1981,"as early as there is data, trend looks pretty consistent over time. outlier in 1983 does not change the trend",0006_216.2,2032,11076,US-6 Price Canyon,Ext # 3623 - US-6 Price Canyon,500.0,11500
+3623,Since 1981,"as early as there is data, trend looks pretty consistent over time. outlier in 1983 does not change the trend",0006_216.2,2036,11700,US-6 Price Canyon,Ext # 3623 - US-6 Price Canyon,500.0,12000
+3623,Since 1981,"as early as there is data, trend looks pretty consistent over time. outlier in 1983 does not change the trend",0006_216.2,2046,13259,US-6 Price Canyon,Ext # 3623 - US-6 Price Canyon,,13500
+3623,Since 1981,"as early as there is data, trend looks pretty consistent over time. outlier in 1983 does not change the trend",0006_216.2,2055,14662,US-6 Price Canyon,Ext # 3623 - US-6 Price Canyon,,14500
+3623,Since 1981,"as early as there is data, trend looks pretty consistent over time. outlier in 1983 does not change the trend",0006_216.2,2060,15441,US-6 Price Canyon,Ext # 3623 - US-6 Price Canyon,,15500
+3624,Since 1990,"data pretty consistent since 2017, but puts forecast too high",0096_006.2,2027,1431,SR-96 Scofield,Ext # 3624 - SR-96 Scofield,600.0,2000
+3624,Since 1990,"data pretty consistent since 2017, but puts forecast too high",0096_006.2,2032,1587,SR-96 Scofield,Ext # 3624 - SR-96 Scofield,400.0,2000
+3624,Since 1990,"data pretty consistent since 2017, but puts forecast too high",0096_006.2,2036,1711,SR-96 Scofield,Ext # 3624 - SR-96 Scofield,400.0,2100
+3624,Since 1990,"data pretty consistent since 2017, but puts forecast too high",0096_006.2,2046,2023,SR-96 Scofield,Ext # 3624 - SR-96 Scofield,300.0,2300
+3624,Since 1990,"data pretty consistent since 2017, but puts forecast too high",0096_006.2,2055,2303,SR-96 Scofield,Ext # 3624 - SR-96 Scofield,100.0,2400
+3624,Since 1990,"data pretty consistent since 2017, but puts forecast too high",0096_006.2,2060,2459,SR-96 Scofield,Ext # 3624 - SR-96 Scofield,0.0,2500
+3625,No Data,,2495_000.0,2027,0,FAR-2495 Skyline Dr,Ext # 3625 - FAR-2495 Skyline Dr,150.0,150
+3625,No Data,,2495_000.0,2032,0,FAR-2495 Skyline Dr,Ext # 3625 - FAR-2495 Skyline Dr,150.0,150
+3625,No Data,,2495_000.0,2036,0,FAR-2495 Skyline Dr,Ext # 3625 - FAR-2495 Skyline Dr,150.0,150
+3625,No Data,,2495_000.0,2046,0,FAR-2495 Skyline Dr,Ext # 3625 - FAR-2495 Skyline Dr,200.0,200
+3625,No Data,,2495_000.0,2055,0,FAR-2495 Skyline Dr,Ext # 3625 - FAR-2495 Skyline Dr,200.0,200
+3625,No Data,,2495_000.0,2060,0,FAR-2495 Skyline Dr,Ext # 3625 - FAR-2495 Skyline Dr,200.0,200
+3626,Since 1981,"as early as there is data, despite some variation early on, trend looks pretty consistent over time",0089_296.0,2027,3446,US-89 Thistle,Ext # 3626 - US-89 Thistle,300.0,3700
+3626,Since 1981,"as early as there is data, despite some variation early on, trend looks pretty consistent over time",0089_296.0,2032,3691,US-89 Thistle,Ext # 3626 - US-89 Thistle,200.0,3900
+3626,Since 1981,"as early as there is data, despite some variation early on, trend looks pretty consistent over time",0089_296.0,2036,3887,US-89 Thistle,Ext # 3626 - US-89 Thistle,100.0,4000
+3626,Since 1981,"as early as there is data, despite some variation early on, trend looks pretty consistent over time",0089_296.0,2046,4377,US-89 Thistle,Ext # 3626 - US-89 Thistle,,4400
+3626,Since 1981,"as early as there is data, despite some variation early on, trend looks pretty consistent over time",0089_296.0,2055,4818,US-89 Thistle,Ext # 3626 - US-89 Thistle,,4800
+3626,Since 1981,"as early as there is data, despite some variation early on, trend looks pretty consistent over time",0089_296.0,2060,5062,US-89 Thistle,Ext # 3626 - US-89 Thistle,,5100
+3627,No Data,,1822_000.0,2027,0,FAR-1822 Nebo Loop,Ext # 3627 - FAR-1822 Nebo Loop,350.0,350
+3627,No Data,,1822_000.0,2032,0,FAR-1822 Nebo Loop,Ext # 3627 - FAR-1822 Nebo Loop,350.0,350
+3627,No Data,,1822_000.0,2036,0,FAR-1822 Nebo Loop,Ext # 3627 - FAR-1822 Nebo Loop,400.0,400
+3627,No Data,,1822_000.0,2046,0,FAR-1822 Nebo Loop,Ext # 3627 - FAR-1822 Nebo Loop,400.0,400
+3627,No Data,,1822_000.0,2055,0,FAR-1822 Nebo Loop,Ext # 3627 - FAR-1822 Nebo Loop,450.0,450
+3627,No Data,,1822_000.0,2060,0,FAR-1822 Nebo Loop,Ext # 3627 - FAR-1822 Nebo Loop,450.0,450
+3628,Since 1984,"as early as there is data, trend looks pretty consistent over time except for past two years, keep eye on it",0015_233.2,2027,36695,I-15 to Juab,Ext # 3628 - I-15 to Juab,,36500
+3628,Since 1984,"as early as there is data, trend looks pretty consistent over time except for past two years, keep eye on it",0015_233.2,2032,40127,I-15 to Juab,Ext # 3628 - I-15 to Juab,,40000
+3628,Since 1984,"as early as there is data, trend looks pretty consistent over time except for past two years, keep eye on it",0015_233.2,2036,42873,I-15 to Juab,Ext # 3628 - I-15 to Juab,,43000
+3628,Since 1984,"as early as there is data, trend looks pretty consistent over time except for past two years, keep eye on it",0015_233.2,2046,49738,I-15 to Juab,Ext # 3628 - I-15 to Juab,,49500
+3628,Since 1984,"as early as there is data, trend looks pretty consistent over time except for past two years, keep eye on it",0015_233.2,2055,55916,I-15 to Juab,Ext # 3628 - I-15 to Juab,,56000
+3628,Since 1984,"as early as there is data, trend looks pretty consistent over time except for past two years, keep eye on it",0015_233.2,2060,59348,I-15 to Juab,Ext # 3628 - I-15 to Juab,,59500
+3629,Since 2011,data pretty consistent since 2011,1826_004.9,2027,3823,FAR-1826 South Ridge Farms,Ext # 3629 - FAR-1826 South Ridge Farms,,3800
+3629,Since 2011,data pretty consistent since 2011,1826_004.9,2032,4248,FAR-1826 South Ridge Farms,Ext # 3629 - FAR-1826 South Ridge Farms,,4200
+3629,Since 2011,data pretty consistent since 2011,1826_004.9,2036,4588,FAR-1826 South Ridge Farms,Ext # 3629 - FAR-1826 South Ridge Farms,,4600
+3629,Since 2011,data pretty consistent since 2011,1826_004.9,2046,5437,FAR-1826 South Ridge Farms,Ext # 3629 - FAR-1826 South Ridge Farms,,5400
+3629,Since 2011,data pretty consistent since 2011,1826_004.9,2055,6202,FAR-1826 South Ridge Farms,Ext # 3629 - FAR-1826 South Ridge Farms,,6200
+3629,Since 2011,data pretty consistent since 2011,1826_004.9,2060,6627,FAR-1826 South Ridge Farms,Ext # 3629 - FAR-1826 South Ridge Farms,,6600
