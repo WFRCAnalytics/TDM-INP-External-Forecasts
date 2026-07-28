@@ -28,6 +28,7 @@ AADT (not year) for 2025 onward — see `project_future_volumes`.
 import io
 import os
 import re
+import zipfile
 
 import geopandas as gpd
 import numpy as np
@@ -995,6 +996,192 @@ df_external_year.loc[mask_future, "PctTrk_MU"] = (
 # D. Global Rounding (Applies to ALL rows: Historic & Forecast)
 df_external_year["PctTrk_SU"] = df_external_year["PctTrk_SU"].astype(float).round(4)
 df_external_year["PctTrk_MU"] = df_external_year["PctTrk_MU"].astype(float).round(4)
+df_external_year
+```
+
+### Step 5.5: CCS-derived / regionally-adjusted truck split (all years)
+
+Steps A-D above give each station's "existing" truck-split percentage for every year
+(historic UDOT SUTRK/CUTRK where available, regression-projected for
+`Year >= TRUCK_PROJECTION_SPLIT_YEAR`). This step now overrides or rescales that series,
+for every year 1981-2060, station by station:
+
+- **Matched stations** (have a CCS site with usable Tue/Wed/Thu length-bin count data):
+  replace `PctTrk_SU`/`PctTrk_MU` with one fixed percentage derived from that station's
+  own vehicle-length distribution, held constant across all years.
+- **Unmatched stations**: keep the existing (already year-varying) percentage series, but
+  rescale it by a constant regional adjustment ratio, keyed by the station's road's
+  Functional Class. Stations whose Functional Class is Local or Unpaved (no ratio defined
+  for either) fall back to the statewide "All Stations" ratio.
+
+#### Matched-station CCS split
+
+```{python}
+# Combine both CCS extracts' length-bin count data (WFRC_260202.zip is the original
+# WFRC-county extract; 20260728_UDOT_CCS is a small supplemental pull covering a few
+# sites outside that coverage, e.g. 307 and 615).
+with zipfile.ZipFile("data/WFRC_260202.zip") as z:
+    with z.open("JKLP_Length_WFRC_2023_Sept_Nov.csv") as f:
+        jklp_a = pd.read_csv(f)
+
+# The supplemental extract is a raw DB export with a trailing "N rows selected." footer.
+jklp_b = pd.read_csv(
+    "data/20260728_UDOT_CCS/JKLP_Length_WFRC_2023_Sept_Nov.csv",
+    skipfooter=2,
+    engine="python",
+)
+jklp_b["SITE"] = jklp_b["SITE"].astype(int)
+
+jklp_all = pd.concat([jklp_a, jklp_b], ignore_index=True)
+jklp_all["abs_site"] = jklp_all["SITE"].abs()
+jklp_all["weekday"] = pd.to_datetime(jklp_all["DATE_ONLY"]).dt.day_name()
+jklp_tue_wed_thu = jklp_all[jklp_all["weekday"].isin(["Tuesday", "Wednesday", "Thursday"])]
+
+# Length bin -> LT(=Passenger)/MD/HV %, pre-collapsed (no FHWA-13-class intermediate step).
+split_factors = pd.read_csv("data/LT_MD_HV_Split_Factors_2025.csv").dropna(
+    subset=["Length Bin"]
+).set_index("Length Bin")
+
+ccs_connections = pd.read_csv("data/External Stations - CCS Connections.csv")
+
+
+def compute_ccs_split(site_candidates, jklp_df, split_factors_df):
+    """
+    Tries each candidate CCS SITE id in order (a station may list more than
+    one candidate site); returns (site_used, LT%, MD%, HV%) from the first
+    one with usable Tue/Wed/Thu length-bin count data, or None if none of
+    the candidates have any.
+    """
+    for site in site_candidates:
+        by_bin = jklp_df.loc[jklp_df["abs_site"] == site].groupby("LENGTH_DEF")["COUNT"].sum()
+        if by_bin.sum() <= 0:
+            continue
+        lt = md = hv = 0.0
+        for bin_name, count in by_bin.items():
+            if bin_name not in split_factors_df.index:
+                continue
+            lt += count * split_factors_df.loc[bin_name, "LT"] / 100
+            md += count * split_factors_df.loc[bin_name, "MD"] / 100
+            hv += count * split_factors_df.loc[bin_name, "HV"] / 100
+        total = lt + md + hv
+        if total > 0:
+            return site, lt / total, md / total, hv / total
+    return None
+
+
+matched_pct = {}
+for _, row in ccs_connections.iterrows():
+    site_str = row["SITE"]
+    if pd.isna(site_str) or str(site_str).strip() == "":
+        continue
+    candidates = [int(float(s.strip())) for s in str(site_str).split(",")]
+    result = compute_ccs_split(candidates, jklp_tue_wed_thu, split_factors)
+    if result is not None:
+        _, lt_pct, md_pct, hv_pct = result
+        matched_pct[int(row["N"])] = {"MD": md_pct, "HV": hv_pct}
+
+matched_pct
+```
+
+#### Functional Class lookup (for unmatched stations)
+
+```{python}
+def ft_to_functional_class(ft):
+    """Maps a WFv1000 master-net FT_2023 facility-type code to the ratio
+    table's Functional Class categories, per the UDOT/WFRC FT code legend."""
+    if ft == 2:
+        return "Principal Arterial"
+    if ft == 3:
+        return "Minor Arterial"
+    if ft in (4, 5):
+        return "Collector"
+    if ft == 6:
+        return "Local"
+    if ft == 7:
+        return "Unpaved"
+    if 12 <= ft <= 15:
+        return "Expressway"
+    if 20 <= ft <= 42:
+        return "Freeway"
+    return None
+
+
+master_net_nodes = gpd.read_file(
+    "data/WFv1000_MasterNet_20260430/WFv1000_MasterNet_20260430_Node.shp"
+)
+master_net_links = gpd.read_file(
+    "data/WFv1000_MasterNet_20260430/WFv1000_MasterNet_20260430_Link.shp"
+)
+
+external_node_ids = master_net_nodes.loc[master_net_nodes["EXTERNAL"] == 1, "N"].tolist()
+connector_links = master_net_links[master_net_links["EXTERNAL"] == 1]
+
+# Each external node's own link is a dummy centroid connector (FT_2023 == 1 always) --
+# the real Functional Class comes from the link one hop further, at the far-side node.
+functional_class_by_external = {}
+for n in external_node_ids:
+    connectors = connector_links[(connector_links["A"] == n) | (connector_links["B"] == n)]
+    far_nodes = set(connectors["A"]).union(connectors["B"]) - {n}
+    ft_values = set()
+    for far in far_nodes:
+        real_links = master_net_links[
+            ((master_net_links["A"] == far) | (master_net_links["B"] == far))
+            & ~((master_net_links["A"] == n) | (master_net_links["B"] == n))
+        ]
+        ft_values.update(real_links["FT_2023"].dropna().unique().tolist())
+    classes = {ft_to_functional_class(ft) for ft in ft_values} - {None}
+    # A station with 0 or >1 distinct classes falls back to "All Stations" below.
+    functional_class_by_external[int(n)] = classes.pop() if len(classes) == 1 else None
+
+functional_class_by_external
+```
+
+#### Regional adjustment ratio lookup
+
+```{python}
+reclass_ratio = pd.read_csv("data/CCS_Reclass_Ratio_2025_2003.csv").set_index(
+    "Functional Class"
+)
+all_stations_ratio = reclass_ratio.loc["All Stations"]
+
+
+def ratio_for_class(functional_class):
+    """Looks up the MD/HV ratio for a Functional Class, falling back to the
+    statewide "All Stations" ratio for Local/Unpaved (neither has its own
+    row) or any unrecognized/ambiguous class."""
+    if functional_class is None or functional_class not in reclass_ratio.index:
+        return all_stations_ratio
+    row = reclass_ratio.loc[functional_class]
+    return row if pd.notna(row["MD Ratio (2025/2003)"]) else all_stations_ratio
+```
+
+#### Apply: override matched stations, rescale unmatched stations
+
+```{python}
+for ext_id, pct in matched_pct.items():
+    mask = df_external_year["WF_Ext"] == ext_id
+    df_external_year.loc[mask, "PctTrk_SU"] = pct["MD"]
+    df_external_year.loc[mask, "PctTrk_MU"] = pct["HV"]
+
+for ext_id in df_external_year["WF_Ext"].unique():
+    if ext_id in matched_pct:
+        continue
+    ratio = ratio_for_class(functional_class_by_external.get(ext_id))
+    mask = df_external_year["WF_Ext"] == ext_id
+    df_external_year.loc[mask, "PctTrk_SU"] *= ratio["MD Ratio (2025/2003)"]
+    df_external_year.loc[mask, "PctTrk_MU"] *= ratio["HV Ratio (2025/2003)"]
+
+df_external_year["PctTrk_SU"] = df_external_year["PctTrk_SU"].astype(float).round(4)
+df_external_year["PctTrk_MU"] = df_external_year["PctTrk_MU"].astype(float).round(4)
+
+# Recompute TRUCK_SU/TRUCK_MU from the (possibly overridden/rescaled) percentages,
+# for every year -- the percentage is now the single source of truth throughout.
+df_external_year["TRUCK_SU"] = (
+    (df_external_year["AADT"] * df_external_year["PctTrk_SU"]).round().astype("Int64")
+)
+df_external_year["TRUCK_MU"] = (
+    (df_external_year["AADT"] * df_external_year["PctTrk_MU"]).round().astype("Int64")
+)
 df_external_year
 ```
 
