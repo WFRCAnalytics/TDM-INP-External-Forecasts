@@ -10,15 +10,29 @@ Single-document version of the external-station forecasting pipeline, replacing 
 5 sequential notebooks (`1-Get-Historic-AADT` through `5-Export-Data`). Same inputs,
 same logic, same outputs — this is a format migration only, not a methodology change.
 
+**How the final AADT for each external station is assembled, by year:**
+
+- **1981–2022**: historic AADT from UDOT/HPMS, matched to each station by route + milepost.
+- **2023–2026**: gap-filled by `sophisticated_fill` — interpolated/extrapolated from the
+  linear-trend forecast points below.
+- **2027 onward**: a per-station OLS linear trend (Step 3), fit over a forecaster-selected
+  historic window and adjusted with hand-tuned corrections (Step 4).
+
+Truck vs. passenger split (`TRUCK_SU`/`TRUCK_MU`/`PASSENGER`) uses UDOT's `SUTRK`/`CUTRK`
+percentages through 2024, then switches to a per-station regression of truck volume against
+AADT (not year) for 2025 onward — see `project_future_volumes`.
+
 ## Setup
 
 ```{python}
 import io
 import os
+import re
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+import pyproj
 import requests
 from dotenv import load_dotenv
 from scipy import stats
@@ -27,6 +41,17 @@ from sklearn.linear_model import LinearRegression
 load_dotenv()
 
 PROJECT_CRS = "EPSG:3566"
+
+# Year boundaries that recur as control-flow thresholds throughout the pipeline.
+# (Distinct from the per-station judgment-call years inside the hardcoded
+# reference tables below, e.g. selected_forecast_df — those are literal data,
+# not thresholds, so they stay as plain literals.)
+HISTORIC_START_YEAR = 1981  # first year with any HPMS/UDOT AADT data
+HISTORIC_END_YEAR = 2023  # last year treated as confirmed historic AADT
+HISTORIC_FILL_CUTOFF_YEAR = 2024  # archive fallback is allowed through this year
+TRUCK_PROJECTION_SPLIT_YEAR = 2025  # truck volume switches from %-split to AADT regression
+PIPELINE_END_YEAR = 2060  # last year in the exported forecast grid
+EXPORT_START_YEAR = 2010  # results/external_year_vol.csv is filtered to Year >= this
 ```
 
 ```{python}
@@ -55,6 +80,16 @@ def fetch_github(
 
     response.raise_for_status()
     return response
+
+
+def format_external_label(df: pd.DataFrame) -> pd.Series:
+    """Builds the 'Ext # <id> - <name>' label used across plots/exports."""
+    return (
+        "Ext # "
+        + df["externalid"].fillna(0).astype(int).astype(str)
+        + " - "
+        + df["name"].fillna("")
+    )
 ```
 
 ## Step 1: Historic AADT (was `1-Get-Historic-AADT`)
@@ -70,11 +105,10 @@ external_segment_link = pd.read_csv("params/externals-segments-link.csv")
 external_segment_link.loc[external_segment_link["externalid"] == 3620, "segid"] = (
     "0189_013.1"  # Alternative: 0189_009.9 # Original: 0189_014.3
 )
+# This is the single source of truth for the link + override — reused as-is in Step 5.
 ```
 
 ```{python}
-import re
-
 # Melt AADT columns
 aadt_year_cols = [col for col in aadt_df.columns if re.match(r"AADT\d{4}$", col)]
 aadt_melted = aadt_df.melt(
@@ -106,7 +140,9 @@ external_segment_link
 
 ```{python}
 # Define full list of years
-years_full_df = pd.DataFrame({"year": list(range(1981, 2024))})  # 1981-2023 inclusive
+years_full_df = pd.DataFrame(
+    {"year": list(range(HISTORIC_START_YEAR, HISTORIC_END_YEAR + 1))}
+)
 
 # Create full cartesian product: segments × years
 full_index_df = external_segment_link[["externalid", "segid"]].merge(
@@ -126,9 +162,9 @@ matched_df
 ```{python}
 full_set_df = pd.merge(
     full_index_df, matched_df, how="left", on=["externalid", "segid", "year"]
+)[["externalid", "segid", "year", "AADT"]].assign(
+    AADT=lambda d: d["AADT"].replace(0, np.nan)
 )
-full_set_df = full_set_df[["externalid", "segid", "year", "AADT"]].copy()
-full_set_df["AADT"] = full_set_df["AADT"].replace(0, np.nan)
 full_set_df
 ```
 
@@ -160,7 +196,7 @@ future_years = [2027, 2032, 2036, 2046, 2055, 2060]
 ```
 
 ```{python}
-dfProjGroupsLinear = pd.DataFrame(
+df_proj_groups_linear = pd.DataFrame(
     [
         ["Since 1981", 1981, 2023, {}],
         ["Since 1982", 1982, 2023, {}],
@@ -207,17 +243,49 @@ dfProjGroupsLinear = pd.DataFrame(
     ],
     columns=("pgName", "pgYearFrom", "pgYearTo", "pgYearsExclude"),
 )
-dfProjGroupsLinear
+df_proj_groups_linear
 ```
 
 ```{python}
 # import historic AADT (created in step 1)
-dfHistoricAadt = pd.read_csv("intermediate/external-historic-aadt.csv")
-dfHistoricAadt
+df_historic_aadt = pd.read_csv("intermediate/external-historic-aadt.csv")
+df_historic_aadt
 ```
 
 Linear forecasts with assist from ChatGPT:
 <https://chat.openai.com/share/d127492a-ad78-4f45-afd0-50e29069db1a>
+
+```{python}
+def fit_linear_forecast(
+    filtered_group: pd.DataFrame,
+    pg_name: str,
+    pg_year_from: int,
+    future_years: list[int],
+) -> tuple[np.ndarray, str] | None:
+    """
+    Fits an OLS trend (AADT ~ year) on `filtered_group` and predicts
+    `pg_year_from` plus each of `future_years`.
+
+    Returns (forecast_array, proj_grp_used) if there are at least 2 valid
+    (non-NaN) historic points to fit a line through; otherwise None, leaving
+    the "no data" fallback to the caller.
+    """
+    X = filtered_group["year"].values.reshape(-1, 1)
+    y = filtered_group["AADT"].values
+
+    valid_mask = ~np.isnan(X.flatten()) & ~np.isnan(y)
+    X_valid = X[valid_mask]
+    y_valid = y[valid_mask]
+
+    if len(X_valid) < 2:
+        return None
+
+    model = LinearRegression()
+    model.fit(X_valid, y_valid)
+    aadt = model.predict(np.array([pg_year_from] + future_years).reshape(-1, 1))
+    aadt = np.rint(aadt).astype(int)
+    return aadt, pg_name
+```
 
 ```{python}
 # Initialize a list to store the individual result DataFrames
@@ -229,14 +297,14 @@ no_data_externalids = set()
 # Open the error file
 with open("intermediate/linear-forecasts-errors.txt", "w") as err_file:
     # Loop through the projection groups
-    for index, row in dfProjGroupsLinear.iterrows():
+    for index, row in df_proj_groups_linear.iterrows():
         pgName = row["pgName"]
         pgYearFrom = row["pgYearFrom"]
         pgYearTo = row["pgYearTo"]
         pgYearsExclude = set(row["pgYearsExclude"])
 
         # Group by externalid and segid and iterate through the groups
-        for (externalid, segid), group in dfHistoricAadt.groupby(
+        for (externalid, segid), group in df_historic_aadt.groupby(
             ["externalid", "segid"]
         ):
             # Filter the data according to the projection group criteria
@@ -247,46 +315,24 @@ with open("intermediate/linear-forecasts-errors.txt", "w") as err_file:
                 ~filtered_group["year"].isin(pgYearsExclude)
             ]
 
-            # Extract X and y
-            X = filtered_group["year"].values.reshape(-1, 1)
-            y = filtered_group["AADT"].values
+            fit_result = fit_linear_forecast(
+                filtered_group, pgName, pgYearFrom, future_years
+            )
 
-            # Filter out NaNs
-            valid_mask = ~np.isnan(X.flatten()) & ~np.isnan(y)
-            X_valid = X[valid_mask]
-            y_valid = y[valid_mask]
-
-            # Check if there is enough data to fit
-            if len(X_valid) >= 2:
-                model = LinearRegression()
-                model.fit(X_valid, y_valid)
-
-                # Predict for the specified future years
-                aadt = model.predict(
-                    np.array([pgYearFrom] + future_years).reshape(-1, 1)
-                )
-
-                # Round the forecasted values to the nearest integers
-                aadt = np.rint(aadt).astype(int)
-
-                proj_grp_used = pgName  # Use the real Projection Group Name
+            if fit_result is not None:
+                aadt, proj_grp_used = fit_result
             else:
-                # Not enough valid data points
-
-                # If externalid already handled, skip
+                # "No Data" is recorded once per externalid: the first
+                # projection group (in "Since <year>" order, oldest first)
+                # that lacks 2+ historic points wins; every later group for
+                # the same externalid is skipped entirely via this memo set,
+                # since a shorter window can't fix a lack of data.
                 if externalid in no_data_externalids:
                     continue  # Skip this segid
-
-                # Otherwise, create 'No Data' once for this externalid
                 error_msg = f"No valid data for externalid: {externalid}, segid: {segid}, Projection Group: {pgName}. Filling zeros."
                 err_file.write(error_msg + "\n")
-
-                # Fill zeros for all years
                 aadt = np.zeros(len([pgYearFrom] + future_years), dtype=int)
-
-                proj_grp_used = "No Data"  # Mark as No Data
-
-                # Record that we've handled this externalid
+                proj_grp_used = "No Data"
                 no_data_externalids.add(externalid)
 
             # Create a dictionary to store results for this group
@@ -333,22 +379,14 @@ name_lookup = externals_df.set_index("externalid")["name"].to_dict()
 
 # Map names to the forecast df
 linear_forecast_df["name"] = linear_forecast_df["externalid"].map(name_lookup)
-linear_forecast_df["external"] = (
-    "Ext # "
-    + linear_forecast_df["externalid"].fillna(0).astype(int).astype(str)
-    + " - "
-    + linear_forecast_df["name"].fillna("")
-)
+linear_forecast_df["external"] = format_external_label(linear_forecast_df)
 
 # Map names to the previous-forecasts df (used later for plotting/reference only)
 previous_forecasts_df["name"] = previous_forecasts_df["externalid"].map(name_lookup)
-previous_forecasts_df["external"] = (
-    "Ext # "
-    + previous_forecasts_df["externalid"].fillna(0).astype(int).astype(str)
-    + " - "
-    + previous_forecasts_df["name"].fillna("")
-)
-previous_forecasts_df = previous_forecasts_df[previous_forecasts_df["year"] > 2023]
+previous_forecasts_df["external"] = format_external_label(previous_forecasts_df)
+previous_forecasts_df = previous_forecasts_df[
+    previous_forecasts_df["year"] > HISTORIC_END_YEAR
+]
 ```
 
 ```{python}
@@ -458,7 +496,8 @@ linear_forecast_selected_df
 ```
 
 ```{python}
-def custom_round(x):
+def custom_round(x: float) -> float:
+    """Rounds to the nearest 10/50/100/500/1000, coarser at larger magnitudes."""
     if x < 100:
         return round(x / 10) * 10
     elif x < 1000:
@@ -549,7 +588,9 @@ manual_adj_df = pd.DataFrame(
 )
 
 # Filter only needed years
-forecast_df = linear_forecast_selected_df[linear_forecast_selected_df["year"] >= 2023]
+forecast_df = linear_forecast_selected_df[
+    linear_forecast_selected_df["year"] >= HISTORIC_END_YEAR
+]
 
 # Merge manual adjustments
 final_forecast_df = pd.merge(
@@ -574,9 +615,7 @@ final_forecast_df
 ```
 
 ```{python}
-# export data for shiny app
-
-import pyproj
+# Export data for the externals-app Shiny app.
 
 # Define transformer from UTM Zone 12N (EPSG:32612) to WGS84 Lat/Lon (EPSG:4326)
 transformer = pyproj.Transformer.from_crs("EPSG:32612", "EPSG:4326", always_xy=True)
@@ -589,25 +628,26 @@ external_xy_df["lon"], external_xy_df["lat"] = transformer.transform(
 
 aadt_df = pd.read_csv("intermediate/external-historic-aadt.csv")
 aadt_df["name"] = aadt_df["externalid"].map(name_lookup)
-aadt_df["external"] = (
-    "Ext # "
-    + aadt_df["externalid"].fillna(0).astype(int).astype(str)
-    + " - "
-    + aadt_df["name"].fillna("")
-)
+aadt_df["external"] = format_external_label(aadt_df)
 
+# historic.csv: actual historic AADT by station/year (used as the "observed" series).
 aadt_df.drop(columns=["external", "segid", "name"]).dropna().astype(int).to_csv(
     "externals-app/data/historic.csv", index=False
 )
+# forecasts-previous.csv: the prior (v9.0) forecast, kept for before/after comparison.
 previous_forecasts_df.drop(columns=["external", "forecast", "name"]).rename(
     columns={"AADT": "previous_forecast"}
 ).sort_values(by=["externalid", "year"]).astype(int).to_csv(
     "externals-app/data/forecasts-previous.csv", index=False
 )
+# externals.csv: station locations (lat/lon) for the app's map view.
 external_xy_df.to_csv("externals-app/data/externals.csv", index=False)
+# forecasts.csv: the current final forecast (linear trend + manual adjustments + rounding).
 final_forecast_df.drop(
     columns=["external", "name", "linear_forecast_notes", "segid", "PROJ_GRP"]
 ).fillna(0).astype(int).to_csv("externals-app/data/forecasts.csv", index=False)
+# linear-forecasts.csv: the selected linear-trend line (one projection group per
+# station, via selected_forecast_df above) that the app draws as the forecast trend.
 linear_forecast_selected_df[linear_forecast_selected_df["linear_forecast"] > 0].drop(
     columns=["PROJ_GRP", "linear_forecast_notes", "segid", "name", "external"]
 ).fillna(0).astype(int).to_csv("externals-app/data/linear-forecasts.csv", index=False)
@@ -622,7 +662,8 @@ final_forecast_df.to_csv("results/final_forecast_df.csv", index=False)
 ### Helper functions
 
 ```{python}
-def sophisticated_fill(group):
+def sophisticated_fill(group: pd.DataFrame) -> pd.Series:
+    """Interpolates AADT_Forecast gaps and back-extrapolates from the earliest trend."""
     # A. PREPARE DATA
     s = group.set_index("Year")["AADT_Forecast"].astype(float)
 
@@ -655,8 +696,12 @@ def sophisticated_fill(group):
 
 ```{python}
 def project_future_volumes(
-    group, value_col, year_col, independent_col, split_year=2025
-):
+    group: pd.DataFrame,
+    value_col: str,
+    year_col: str,
+    independent_col: str,
+    split_year: int = TRUCK_PROJECTION_SPLIT_YEAR,
+) -> pd.Series:
     """
     Projects future volumes using Linear Regression (y = mx + b).
 
@@ -729,17 +774,16 @@ df_aadt_udot = pd.read_csv(io.StringIO(response.text))
 df_aadt_udot
 ```
 
-```{python}
-external_segment_link = pd.read_csv("params/externals-segments-link.csv")
+Reusing `external_segment_link` from Step 1 rather than re-reading it — same file, same
+CCS-319 override, so there's a single place that logic can be edited.
 
-# Manual Override: make it closer to the CCS station #-319
-external_segment_link.loc[external_segment_link["externalid"] == 3620, "segid"] = (
-    "0189_013.1"  # Alternative: 0189_009.9 # Original: 0189_014.3
-)
+```{python}
 external_segment_link
 ```
 
 ```{python}
+# Prior published version of external_year_vol.csv — used below as a fallback source
+# for AWDT_FAC and historic AADT/truck-% where the primary sources have gaps.
 df_external_year_archive = pd.read_csv(r"archive/v920/external_year_vol.csv")
 df_external_year_archive
 ```
@@ -751,7 +795,10 @@ df_external_year_archive
 ```{python}
 df_external_year = (
     pd.MultiIndex.from_product(
-        [external_segment_link["externalid"].unique(), range(1981, 2061)],
+        [
+            external_segment_link["externalid"].unique(),
+            range(HISTORIC_START_YEAR, PIPELINE_END_YEAR + 1),
+        ],
         names=["WF_Ext", "Year"],
     )
     .to_frame(index=False)
@@ -835,7 +882,7 @@ for src, dest in cols_to_update.items():
     )
 
 # 4. Fallback: Fill Historic Gaps from Archive
-mask_historic_fill = df_external_year["Year"] <= 2024
+mask_historic_fill = df_external_year["Year"] <= HISTORIC_FILL_CUTOFF_YEAR
 
 fallback_cols = ["AADT", "PctTrk_SU", "PctTrk_MU"]
 target_cols = ["AADT_Historic", "PctTrk_SU", "PctTrk_MU"]
@@ -866,7 +913,7 @@ df_external_year["AADT_Forecast"] = (
 )
 
 # Extrapolate/Back-cast Forecast (Fill 2023-2026 using trend from 2027+)
-forecast_mask = df_external_year["Year"] >= 2023
+forecast_mask = df_external_year["Year"] >= HISTORIC_END_YEAR
 
 df_external_year.loc[forecast_mask, "AADT_Forecast"] = (
     df_external_year[forecast_mask]
@@ -876,9 +923,9 @@ df_external_year.loc[forecast_mask, "AADT_Forecast"] = (
 )
 
 # Create Combined AADT Column (The "Final" Column)
-# Logic: Use Historic if < 2023, else use Forecast
+# Logic: Use Historic if < HISTORIC_END_YEAR, else use Forecast
 df_external_year["AADT"] = np.where(
-    df_external_year["Year"] < 2023,
+    df_external_year["Year"] < HISTORIC_END_YEAR,
     df_external_year["AADT_Historic"],
     df_external_year["AADT_Forecast"],
 )
@@ -902,23 +949,28 @@ df_external_year["TRUCK_MU"] = (
 ).where(df_external_year["PctTrk_MU"].notna())
 
 # B. Project Future Volumes (Rows >= 2025)
-df_external_year["TRUCK_SU"] = df_external_year.groupby(
-    "WF_Ext", group_keys=False
-).apply(
-    lambda g: project_future_volumes(
-        g, "TRUCK_SU", "Year", independent_col="AADT", split_year=2025
-    ),
-    include_groups=False,
-)
+# split_year=2025 lines up with mask_historic_fill (<= 2024) above: historic
+# truck percentages are trusted through 2024, so 2025+ switches to regressing
+# truck volume against AADT instead. TRUCK_SU and TRUCK_MU are independent
+# regressions (both only depend on Year/AADT, not on each other), so both are
+# computed in a single per-WF_Ext groupby pass rather than two.
+def project_future_truck_volumes(
+    group: pd.DataFrame, split_year: int = TRUCK_PROJECTION_SPLIT_YEAR
+) -> pd.DataFrame:
+    """Projects TRUCK_SU and TRUCK_MU forward from `split_year` for one WF_Ext group."""
+    group = group.copy()
+    group["TRUCK_SU"] = project_future_volumes(
+        group, "TRUCK_SU", "Year", independent_col="AADT", split_year=split_year
+    )
+    group["TRUCK_MU"] = project_future_volumes(
+        group, "TRUCK_MU", "Year", independent_col="AADT", split_year=split_year
+    )
+    return group[["TRUCK_SU", "TRUCK_MU"]]
 
-df_external_year["TRUCK_MU"] = df_external_year.groupby(
+
+df_external_year[["TRUCK_SU", "TRUCK_MU"]] = df_external_year.groupby(
     "WF_Ext", group_keys=False
-).apply(
-    lambda g: project_future_volumes(
-        g, "TRUCK_MU", "Year", independent_col="AADT", split_year=2025
-    ),
-    include_groups=False,
-)
+).apply(project_future_truck_volumes, include_groups=False)
 
 # Round Truck Volumes to Integers
 df_external_year["TRUCK_SU"] = (
@@ -929,7 +981,7 @@ df_external_year["TRUCK_MU"] = (
 )
 
 # C. Back-Calculate Future Percentages
-mask_future = df_external_year["Year"] >= 2025
+mask_future = df_external_year["Year"] >= TRUCK_PROJECTION_SPLIT_YEAR
 
 df_external_year.loc[mask_future, "PctTrk_SU"] = (
     df_external_year.loc[mask_future, "TRUCK_SU"]
@@ -1022,7 +1074,7 @@ os.makedirs("results", exist_ok=True)
             "PctTrk_MU",
         ]
     ][
-        (df_external_year["Year"] >= 2010)
+        (df_external_year["Year"] >= EXPORT_START_YEAR)
         &
         # External 3611 link doesn't currently exist, so it shouldn't be forecasted.
         # We'll have to assert a shift from External 3612 to 3611 using USTM model output from UDOT.
