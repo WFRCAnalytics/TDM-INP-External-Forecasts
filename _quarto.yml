@@ -1,3 +1,63 @@
 project:
-  type: default
+  type: website
   output-dir: docs
+  render:
+    - index.qmd
+    # 1-Get-Historic-AADT.ipynb .. 5-Export-Data.ipynb: the original 5-notebook
+    # pipeline. Superseded by index.qmd (see README) -- kept in the repo as
+    # archived/historical reference only, excluded from render.
+    - "!*.ipynb"
+
+# Needed locally so brand-relative asset paths (logo, theme) resolve correctly;
+# see https://github.com/WFRCAnalytics/wfrc-brand#readme.
+brand: _extensions/WFRCAnalytics/wfrc-brand/brand.yml
+
+website:
+  title: "External Station Traffic Forecasts"
+  site-url: "https://wfrcanalytics.github.io/TDM-INP-External-Forecasts/"
+  # Repeating logo-alt/right here because defining navbar.tools below replaces
+  # the extension's whole navbar block (see wfrc-brand's merge-behavior note).
+  navbar:
+    logo-alt: "Wasatch Front Regional Council"
+    # White icon for both themes (brand.yml would otherwise swap color/white
+    # per light/dark, like the favicon variants below).
+    logo: _extensions/WFRCAnalytics/wfrc-brand/assets/logo/abbreviated/WFRC_logo_abbreviated_white_transparent.png
+    right:
+      - text: Follow Us
+        menu:
+          - icon: facebook
+            text: Facebook
+            href: https://www.facebook.com/WasatchFrontRegionalCouncil
+            target: _blank
+          - icon: twitter-x
+            text: X (Twitter)
+            href: https://twitter.com/wasatchcouncil
+            target: _blank
+          - icon: instagram
+            text: Instagram
+            href: https://www.instagram.com/wasatchfrontregionalcouncil/
+            target: _blank
+          - icon: linkedin
+            text: LinkedIn
+            href: https://www.linkedin.com/company/wasatch-front-regional-council
+            target: _blank
+          - icon: youtube
+            text: YouTube
+            href: https://www.youtube.com/user/wfrcvideo
+            target: _blank
+    tools:
+      - icon: github
+        menu:
+          - text: Source Code
+            href: https://github.com/WFRCAnalytics/TDM-INP-External-Forecasts
+            target: _blank
+          - text: Report a Bug
+            href: https://github.com/WFRCAnalytics/TDM-INP-External-Forecasts/issues/new
+            target: _blank
+  # Fallback for browsers that ignore prefers-color-scheme on <link rel="icon">
+  # (Firefox/Safari); Chrome/Edge get the light/dark swap from the include below.
+  favicon: _extensions/WFRCAnalytics/wfrc-brand/assets/logo/abbreviated/WFRC_logo_abbreviated_color_transparent.png
+
+format:
+  html:
+    include-in-header: assets/favicon-color-scheme.html

@@ -45,6 +45,7 @@ import io
 import os
 import re
 import zipfile
+from pathlib import Path
 
 import geopandas as gpd
 import numpy as np
@@ -63,12 +64,14 @@ PROJECT_CRS = "EPSG:3566"
 # (Distinct from the per-station judgment-call years inside the hardcoded
 # reference tables below, e.g. selected_forecast_df — those are literal data,
 # not thresholds, so they stay as plain literals.)
-HISTORIC_START_YEAR = 1981  # first year with any HPMS/UDOT AADT data
-HISTORIC_END_YEAR = 2023  # last year treated as confirmed historic AADT
-HISTORIC_FILL_CUTOFF_YEAR = 2024  # archive fallback is allowed through this year
-TRUCK_PROJECTION_SPLIT_YEAR = 2025  # truck volume switches from %-split to AADT regression
-PIPELINE_END_YEAR = 2060  # last year in the exported forecast grid
-EXPORT_START_YEAR = 2010  # results/external_year_vol.csv is filtered to Year >= this
+YEARS = {
+    "HISTORIC_START": 1981,  # first year with any HPMS/UDOT AADT data
+    "HISTORIC_END": 2023,  # last year treated as confirmed historic AADT
+    "HISTORIC_FILL_CUTOFF": 2024,  # archive fallback is allowed through this year
+    "TRUCK_PROJECTION_SPLIT": 2025,  # truck volume switches from %-split to AADT regression
+    "PIPELINE_END": 2060,  # last year in the exported forecast grid
+    "EXPORT_START": 2010,  # results/external_year_vol.csv is filtered to Year >= this
+}
 ```
 
 ```{python}
@@ -158,7 +161,7 @@ external_segment_link
 ```{python}
 # Define full list of years
 years_full_df = pd.DataFrame(
-    {"year": list(range(HISTORIC_START_YEAR, HISTORIC_END_YEAR + 1))}
+    {"year": list(range(YEARS["HISTORIC_START"], YEARS["HISTORIC_END"] + 1))}
 )
 
 # Create full cartesian product: segments × years
@@ -402,7 +405,7 @@ linear_forecast_df["external"] = format_external_label(linear_forecast_df)
 previous_forecasts_df["name"] = previous_forecasts_df["externalid"].map(name_lookup)
 previous_forecasts_df["external"] = format_external_label(previous_forecasts_df)
 previous_forecasts_df = previous_forecasts_df[
-    previous_forecasts_df["year"] > HISTORIC_END_YEAR
+    previous_forecasts_df["year"] > YEARS["HISTORIC_END"]
 ]
 ```
 
@@ -606,7 +609,7 @@ manual_adj_df = pd.DataFrame(
 
 # Filter only needed years
 forecast_df = linear_forecast_selected_df[
-    linear_forecast_selected_df["year"] >= HISTORIC_END_YEAR
+    linear_forecast_selected_df["year"] >= YEARS["HISTORIC_END"]
 ]
 
 # Merge manual adjustments
@@ -717,7 +720,7 @@ def project_future_volumes(
     value_col: str,
     year_col: str,
     independent_col: str,
-    split_year: int = TRUCK_PROJECTION_SPLIT_YEAR,
+    split_year: int = YEARS["TRUCK_PROJECTION_SPLIT"],
 ) -> pd.Series:
     """
     Projects future volumes using Linear Regression (y = mx + b).
@@ -814,7 +817,7 @@ df_external_year = (
     pd.MultiIndex.from_product(
         [
             external_segment_link["externalid"].unique(),
-            range(HISTORIC_START_YEAR, PIPELINE_END_YEAR + 1),
+            range(YEARS["HISTORIC_START"], YEARS["PIPELINE_END"] + 1),
         ],
         names=["WF_Ext", "Year"],
     )
@@ -899,7 +902,7 @@ for src, dest in cols_to_update.items():
     )
 
 # 4. Fallback: Fill Historic Gaps from Archive
-mask_historic_fill = df_external_year["Year"] <= HISTORIC_FILL_CUTOFF_YEAR
+mask_historic_fill = df_external_year["Year"] <= YEARS["HISTORIC_FILL_CUTOFF"]
 
 fallback_cols = ["AADT", "PctTrk_SU", "PctTrk_MU"]
 target_cols = ["AADT_Historic", "PctTrk_SU", "PctTrk_MU"]
@@ -930,7 +933,7 @@ df_external_year["AADT_Forecast"] = (
 )
 
 # Extrapolate/Back-cast Forecast (Fill 2023-2026 using trend from 2027+)
-forecast_mask = df_external_year["Year"] >= HISTORIC_END_YEAR
+forecast_mask = df_external_year["Year"] >= YEARS["HISTORIC_END"]
 
 df_external_year.loc[forecast_mask, "AADT_Forecast"] = (
     df_external_year[forecast_mask]
@@ -940,9 +943,9 @@ df_external_year.loc[forecast_mask, "AADT_Forecast"] = (
 )
 
 # Create Combined AADT Column (The "Final" Column)
-# Logic: Use Historic if < HISTORIC_END_YEAR, else use Forecast
+# Logic: Use Historic if < YEARS["HISTORIC_END"], else use Forecast
 df_external_year["AADT"] = np.where(
-    df_external_year["Year"] < HISTORIC_END_YEAR,
+    df_external_year["Year"] < YEARS["HISTORIC_END"],
     df_external_year["AADT_Historic"],
     df_external_year["AADT_Forecast"],
 )
@@ -972,7 +975,7 @@ df_external_year["TRUCK_MU"] = (
 # regressions (both only depend on Year/AADT, not on each other), so both are
 # computed in a single per-WF_Ext groupby pass rather than two.
 def project_future_truck_volumes(
-    group: pd.DataFrame, split_year: int = TRUCK_PROJECTION_SPLIT_YEAR
+    group: pd.DataFrame, split_year: int = YEARS["TRUCK_PROJECTION_SPLIT"]
 ) -> pd.DataFrame:
     """Projects TRUCK_SU and TRUCK_MU forward from `split_year` for one WF_Ext group."""
     group = group.copy()
@@ -998,7 +1001,7 @@ df_external_year["TRUCK_MU"] = (
 )
 
 # C. Back-Calculate Future Percentages
-mask_future = df_external_year["Year"] >= TRUCK_PROJECTION_SPLIT_YEAR
+mask_future = df_external_year["Year"] >= YEARS["TRUCK_PROJECTION_SPLIT"]
 
 df_external_year.loc[mask_future, "PctTrk_SU"] = (
     df_external_year.loc[mask_future, "TRUCK_SU"]
@@ -1019,7 +1022,7 @@ df_external_year
 
 Steps A-D above give each station's "existing" truck-split percentage for every year
 (historic UDOT SUTRK/CUTRK where available, regression-projected for
-`Year >= TRUCK_PROJECTION_SPLIT_YEAR`). This step now overrides or rescales that series,
+`Year >= YEARS["TRUCK_PROJECTION_SPLIT"]`). This step now overrides or rescales that series,
 for every year 1981-2060, station by station:
 
 - **Matched stations** (have a CCS site with usable Tue/Wed/Thu length-bin count data):
@@ -1256,7 +1259,7 @@ df_external_year
 ## Export final results
 
 ```{python}
-os.makedirs("results", exist_ok=True)
+Path("results").mkdir(parents=True, exist_ok=True)
 
 (
     df_external_year[
@@ -1277,7 +1280,7 @@ os.makedirs("results", exist_ok=True)
             "PctTrk_MU",
         ]
     ][
-        (df_external_year["Year"] >= EXPORT_START_YEAR)
+        (df_external_year["Year"] >= YEARS["EXPORT_START"])
         &
         # External 3611 link doesn't currently exist, so it shouldn't be forecasted.
         # We'll have to assert a shift from External 3612 to 3611 using USTM model output from UDOT.
