@@ -410,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="58ef74dd" class="cell" data-execution_count="1">
+<div id="36d8b628" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
@@ -443,7 +443,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"EXPORT_START"</span>: <span class="dv">2010</span>,  <span class="co"># results/external_year_vol.csv is filtered to Year &gt;= this</span></span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="9adb6e09" class="cell" data-execution_count="2">
+<div id="72e066b1" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fetch_github(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    url: <span class="bu">str</span>, mode: <span class="bu">str</span> <span class="op">=</span> <span class="st">"private"</span>, token_env_var: <span class="bu">str</span> <span class="op">=</span> <span class="st">"GITHUB_TOKEN"</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> requests.Response:</span>
@@ -483,7 +483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-1-historic-aadt-was-1-get-historic-aadt" class="level2">
 <h2 class="anchored" data-anchor-id="step-1-historic-aadt-was-1-get-historic-aadt">Step 1: Historic AADT (was <code>1-Get-Historic-AADT</code>)</h2>
-<div id="a870971c" class="cell" data-execution_count="3">
+<div id="b5d37f76" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>externals_df <span class="op">=</span> pd.read_csv(<span class="st">"params/externals.csv"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>aadt_df <span class="op">=</span> pd.read_csv(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/AADTHistory 2023.xlsx - UnroundedAADT2023.csv"</span>, low_memory<span class="op">=</span><span class="va">False</span></span>
@@ -496,7 +496,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the single source of truth for the link + override — reused as-is in Step 5.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="12b8dbe6" class="cell" data-execution_count="4">
+<div id="9282076f" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Melt AADT columns</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>aadt_year_cols <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> aadt_df.columns <span class="cf">if</span> re.match(<span class="vs">r"AADT</span><span class="dv">\d</span><span class="op">{4}</span><span class="dv">$</span><span class="vs">"</span>, col)]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>aadt_melted <span class="op">=</span> aadt_df.melt(</span>
@@ -625,7 +625,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="8a131ee6" class="cell" data-execution_count="5">
+<div id="4cbee632" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get external route, mp</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>external_segment_link[[<span class="st">"route"</span>, <span class="st">"milepost"</span>]] <span class="op">=</span> external_segment_link[</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"segid"</span></span>
@@ -857,7 +857,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="1fae88a6" class="cell" data-execution_count="6">
+<div id="c37ef2ae" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define full list of years</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>years_full_df <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"year"</span>: <span class="bu">list</span>(<span class="bu">range</span>(YEARS[<span class="st">"HISTORIC_START"</span>], YEARS[<span class="st">"HISTORIC_END"</span>] <span class="op">+</span> <span class="dv">1</span>))}</span>
@@ -955,7 +955,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="5219c2c8" class="cell" data-execution_count="7">
+<div id="6fb9fb5e" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge external_segment_link and aadt_melted with left join</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>matched_df <span class="op">=</span> external_segment_link.merge(aadt_melted, on<span class="op">=</span>[<span class="st">"route"</span>], how<span class="op">=</span><span class="st">"left"</span>).query(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mp_begin &lt; milepost + .01 &lt;= mp_end"</span></span>
@@ -1108,7 +1108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="e21c0c23" class="cell" data-execution_count="8">
+<div id="561e2979" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>full_set_df <span class="op">=</span> pd.merge(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    full_index_df, matched_df, how<span class="op">=</span><span class="st">"left"</span>, on<span class="op">=</span>[<span class="st">"externalid"</span>, <span class="st">"segid"</span>, <span class="st">"year"</span>]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"externalid"</span>, <span class="st">"segid"</span>, <span class="st">"year"</span>, <span class="st">"AADT"</span>]].assign(</span>
@@ -1214,13 +1214,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="62ea591b" class="cell" data-execution_count="9">
+<div id="2693cf10" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>full_set_df.to_csv(<span class="st">"intermediate/external-historic-aadt.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-2-previous-forecasts-v900-was-2-prepare-previous-forecasts" class="level2">
 <h2 class="anchored" data-anchor-id="step-2-previous-forecasts-v900-was-2-prepare-previous-forecasts">Step 2: Previous Forecasts v900 (was <code>2-Prepare-Previous-Forecasts</code>)</h2>
-<div id="075e7b28" class="cell" data-execution_count="10">
+<div id="6271a552" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>previous_forecasts_df <span class="op">=</span> pd.read_csv(<span class="st">"data/external-forecasts-v900.csv"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>previous_forecasts_df <span class="op">=</span> previous_forecasts_df.melt(</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    id_vars<span class="op">=</span>[<span class="st">"TAZ"</span>], var_name<span class="op">=</span><span class="st">"year"</span>, value_name<span class="op">=</span><span class="st">"AADT"</span></span>
@@ -1327,65 +1327,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="10caaed4" class="cell" data-execution_count="11">
+<div id="8036d5d3" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>previous_forecasts_df.to_csv(<span class="st">"intermediate/previous-forecasts.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-3-linear-forecasts-was-3-prepare-linear-forecasts" class="level2">
 <h2 class="anchored" data-anchor-id="step-3-linear-forecasts-was-3-prepare-linear-forecasts">Step 3: Linear Forecasts (was <code>3-Prepare-Linear-Forecasts</code>)</h2>
-<div id="bd3cb693" class="cell" data-execution_count="12">
+<div id="cb5ea37a" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># list of years for which to produce linear forecasts</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>future_years <span class="op">=</span> [<span class="dv">2027</span>, <span class="dv">2032</span>, <span class="dv">2036</span>, <span class="dv">2046</span>, <span class="dv">2055</span>, <span class="dv">2060</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="a721ef55" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_proj_groups_linear <span class="op">=</span> pd.DataFrame(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    [</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1981"</span>, <span class="dv">1981</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1982"</span>, <span class="dv">1982</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1983"</span>, <span class="dv">1983</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1984"</span>, <span class="dv">1984</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1985"</span>, <span class="dv">1985</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1986"</span>, <span class="dv">1986</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1987"</span>, <span class="dv">1987</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1988"</span>, <span class="dv">1988</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1989"</span>, <span class="dv">1989</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1990"</span>, <span class="dv">1990</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1991"</span>, <span class="dv">1991</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1992"</span>, <span class="dv">1992</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1993"</span>, <span class="dv">1993</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1994"</span>, <span class="dv">1994</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1995"</span>, <span class="dv">1995</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1996"</span>, <span class="dv">1996</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1997"</span>, <span class="dv">1997</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1998"</span>, <span class="dv">1998</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1999"</span>, <span class="dv">1999</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2000"</span>, <span class="dv">2000</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2001"</span>, <span class="dv">2001</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2002"</span>, <span class="dv">2002</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2003"</span>, <span class="dv">2003</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2004"</span>, <span class="dv">2004</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2005"</span>, <span class="dv">2005</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2006"</span>, <span class="dv">2006</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2007"</span>, <span class="dv">2007</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2008"</span>, <span class="dv">2008</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2009"</span>, <span class="dv">2009</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2010"</span>, <span class="dv">2010</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2011"</span>, <span class="dv">2011</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2012"</span>, <span class="dv">2012</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2013"</span>, <span class="dv">2013</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2014"</span>, <span class="dv">2014</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2015"</span>, <span class="dv">2015</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2016"</span>, <span class="dv">2016</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2017"</span>, <span class="dv">2017</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2018"</span>, <span class="dv">2018</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2019"</span>, <span class="dv">2019</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2020"</span>, <span class="dv">2020</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2021"</span>, <span class="dv">2021</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 2022"</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, {}],</span>
-<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>(<span class="st">"pgName"</span>, <span class="st">"pgYearFrom"</span>, <span class="st">"pgYearTo"</span>, <span class="st">"pgYearsExclude"</span>),</span>
-<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>df_proj_groups_linear</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0d9e15b8" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One projection group per "Since &lt;year&gt;" starting point, all ending at</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># HISTORIC_END with no excluded years -- a pure derived sequence, unlike</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># selected_forecast_df/manual_adj_df below, which are genuine per-station</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># judgment calls and stay as literal tables.</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df_proj_groups_linear <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        [<span class="ss">f"Since </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">"</span>, year, YEARS[<span class="st">"HISTORIC_END"</span>], {}]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> year <span class="kw">in</span> <span class="bu">range</span>(YEARS[<span class="st">"HISTORIC_START"</span>], YEARS[<span class="st">"HISTORIC_END"</span>])</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>(<span class="st">"pg_name"</span>, <span class="st">"pg_year_from"</span>, <span class="st">"pg_year_to"</span>, <span class="st">"pg_years_exclude"</span>),</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>df_proj_groups_linear</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 
@@ -1394,10 +1358,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">pgName</th>
-<th data-quarto-table-cell-role="th">pgYearFrom</th>
-<th data-quarto-table-cell-role="th">pgYearTo</th>
-<th data-quarto-table-cell-role="th">pgYearsExclude</th>
+<th data-quarto-table-cell-role="th">pg_name</th>
+<th data-quarto-table-cell-role="th">pg_year_from</th>
+<th data-quarto-table-cell-role="th">pg_year_to</th>
+<th data-quarto-table-cell-role="th">pg_years_exclude</th>
 </tr>
 </thead>
 <tbody>
@@ -1701,7 +1665,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="77914290" class="cell" data-execution_count="14">
+<div id="939420ff" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import historic AADT (created in step 1)</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df_historic_aadt <span class="op">=</span> pd.read_csv(<span class="st">"intermediate/external-historic-aadt.csv"</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>df_historic_aadt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1805,7 +1769,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Linear forecasts with assist from ChatGPT: <a href="https://chat.openai.com/share/d127492a-ad78-4f45-afd0-50e29069db1a" class="uri">https://chat.openai.com/share/d127492a-ad78-4f45-afd0-50e29069db1a</a></p>
-<div id="583c7271" class="cell" data-execution_count="15">
+<div id="34f3d448" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit_linear_forecast(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    filtered_group: pd.DataFrame,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    pg_name: <span class="bu">str</span>,</span>
@@ -1836,7 +1800,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    aadt <span class="op">=</span> np.rint(aadt).astype(<span class="bu">int</span>)</span>
 <span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> aadt, pg_name</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="1d16d3cf" class="cell" data-execution_count="16">
+<div id="3831f193" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a list to store the individual result DataFrames</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>forecast_results_list <span class="op">=</span> []</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1846,11 +1810,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Open the error file</span></span>
 <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"intermediate/linear-forecasts-errors.txt"</span>, <span class="st">"w"</span>) <span class="im">as</span> err_file:</span>
 <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop through the projection groups</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> index, row <span class="kw">in</span> df_proj_groups_linear.iterrows():</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        pgName <span class="op">=</span> row[<span class="st">"pgName"</span>]</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        pgYearFrom <span class="op">=</span> row[<span class="st">"pgYearFrom"</span>]</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        pgYearTo <span class="op">=</span> row[<span class="st">"pgYearTo"</span>]</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        pgYearsExclude <span class="op">=</span> <span class="bu">set</span>(row[<span class="st">"pgYearsExclude"</span>])</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _, row <span class="kw">in</span> df_proj_groups_linear.iterrows():</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        pg_name <span class="op">=</span> row[<span class="st">"pg_name"</span>]</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        pg_year_from <span class="op">=</span> row[<span class="st">"pg_year_from"</span>]</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        pg_year_to <span class="op">=</span> row[<span class="st">"pg_year_to"</span>]</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        pg_years_exclude <span class="op">=</span> <span class="bu">set</span>(row[<span class="st">"pg_years_exclude"</span>])</span>
 <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Group by externalid and segid and iterate through the groups</span></span>
 <span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (externalid, segid), group <span class="kw">in</span> df_historic_aadt.groupby(</span>
@@ -1858,14 +1822,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        ):</span>
 <span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Filter the data according to the projection group criteria</span></span>
 <span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>            filtered_group <span class="op">=</span> group[</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>                (group[<span class="st">"year"</span>] <span class="op">&gt;=</span> pgYearFrom) <span class="op">&amp;</span> (group[<span class="st">"year"</span>] <span class="op">&lt;=</span> pgYearTo)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>                (group[<span class="st">"year"</span>] <span class="op">&gt;=</span> pg_year_from) <span class="op">&amp;</span> (group[<span class="st">"year"</span>] <span class="op">&lt;=</span> pg_year_to)</span>
 <span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>            ]</span>
 <span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>            filtered_group <span class="op">=</span> filtered_group[</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>                <span class="op">~</span>filtered_group[<span class="st">"year"</span>].isin(pgYearsExclude)</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>                <span class="op">~</span>filtered_group[<span class="st">"year"</span>].isin(pg_years_exclude)</span>
 <span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>            ]</span>
 <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>            fit_result <span class="op">=</span> fit_linear_forecast(</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>                filtered_group, pgName, pgYearFrom, future_years</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>                filtered_group, pg_name, pg_year_from, future_years</span>
 <span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>            )</span>
 <span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> fit_result <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
@@ -1878,9 +1842,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>                <span class="co"># since a shorter window can't fix a lack of data.</span></span>
 <span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> externalid <span class="kw">in</span> no_data_externalids:</span>
 <span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">continue</span>  <span class="co"># Skip this segid</span></span>
-<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>                error_msg <span class="op">=</span> <span class="ss">f"No valid data for externalid: </span><span class="sc">{</span>externalid<span class="sc">}</span><span class="ss">, segid: </span><span class="sc">{</span>segid<span class="sc">}</span><span class="ss">, Projection Group: </span><span class="sc">{</span>pgName<span class="sc">}</span><span class="ss">. Filling zeros."</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>                error_msg <span class="op">=</span> <span class="ss">f"No valid data for externalid: </span><span class="sc">{</span>externalid<span class="sc">}</span><span class="ss">, segid: </span><span class="sc">{</span>segid<span class="sc">}</span><span class="ss">, Projection Group: </span><span class="sc">{</span>pg_name<span class="sc">}</span><span class="ss">. Filling zeros."</span></span>
 <span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>                err_file.write(error_msg <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>                aadt <span class="op">=</span> np.zeros(<span class="bu">len</span>([pgYearFrom] <span class="op">+</span> future_years), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>                aadt <span class="op">=</span> np.zeros(<span class="bu">len</span>([pg_year_from] <span class="op">+</span> future_years), dtype<span class="op">=</span><span class="bu">int</span>)</span>
 <span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>                proj_grp_used <span class="op">=</span> <span class="st">"No Data"</span></span>
 <span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>                no_data_externalids.add(externalid)</span>
 <span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a></span>
@@ -1893,7 +1857,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>            result_dict.update(</span>
 <span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>                {</span>
 <span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>                    year: forecast</span>
-<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> year, forecast <span class="kw">in</span> <span class="bu">zip</span>([pgYearFrom] <span class="op">+</span> future_years, aadt)</span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> year, forecast <span class="kw">in</span> <span class="bu">zip</span>([pg_year_from] <span class="op">+</span> future_years, aadt)</span>
 <span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>                }</span>
 <span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>            )</span>
 <span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a></span>
@@ -2020,13 +1984,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="61305525" class="cell" data-execution_count="17">
+<div id="da666822" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>forecast_results.to_csv(<span class="st">"results/linear-forecasts.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-4-finalize-forecasts-was-4-finalize-forecasts" class="level2">
 <h2 class="anchored" data-anchor-id="step-4-finalize-forecasts-was-4-finalize-forecasts">Step 4: Finalize Forecasts (was <code>4-Finalize-Forecasts</code>)</h2>
-<div id="9857c5a7" class="cell" data-execution_count="18">
+<div id="dce82c02" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>linear_forecast_df <span class="op">=</span> pd.read_csv(<span class="st">"results/linear-forecasts.csv"</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>externals_df <span class="op">=</span> pd.read_csv(<span class="st">"params/externals.csv"</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>previous_forecasts_df <span class="op">=</span> pd.read_csv(<span class="st">"intermediate/previous-forecasts.csv"</span>)</span>
@@ -2046,7 +2010,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    previous_forecasts_df[<span class="st">"year"</span>] <span class="op">&gt;</span> YEARS[<span class="st">"HISTORIC_END"</span>]</span>
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="3284fdbc" class="cell" data-execution_count="19">
+<div id="72496c9d" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>selected_forecast_df <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    [</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        [<span class="dv">3601</span>, <span class="st">"Since 2003"</span>, <span class="st">"as early as there is data"</span>],</span>
@@ -2297,7 +2261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="845c2776" class="cell" data-execution_count="20">
+<div id="96d5154a" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> custom_round(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rounds to the nearest 10/50/100/500/1000, coarser at larger magnitudes."""</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;</span> <span class="dv">100</span>:</span>
@@ -2311,7 +2275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
 <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">round</span>(x <span class="op">/</span> <span class="dv">1000</span>) <span class="op">*</span> <span class="dv">1000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="84b91d35" class="cell" data-execution_count="21">
+<div id="389b3247" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example manual adjustment data</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>manual_adj_df <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    [</span>
@@ -2399,20 +2363,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-85"><a href="#cb21-85" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb21-86"><a href="#cb21-86" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-87"><a href="#cb21-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute final_forecast using manual adjustments where available</span></span>
-<span id="cb21-88"><a href="#cb21-88" aria-hidden="true" tabindex="-1"></a>final_forecast_df[<span class="st">"final_forecast"</span>] <span class="op">=</span> final_forecast_df.<span class="bu">apply</span>(</span>
-<span id="cb21-89"><a href="#cb21-89" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> row: (</span>
-<span id="cb21-90"><a href="#cb21-90" aria-hidden="true" tabindex="-1"></a>        row[<span class="st">"linear_forecast"</span>] <span class="op">+</span> row[<span class="st">"manual_adj"</span>]</span>
-<span id="cb21-91"><a href="#cb21-91" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> pd.notnull(row[<span class="st">"manual_adj"</span>])</span>
-<span id="cb21-92"><a href="#cb21-92" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> row[<span class="st">"linear_forecast"</span>]</span>
-<span id="cb21-93"><a href="#cb21-93" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb21-94"><a href="#cb21-94" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb21-88"><a href="#cb21-88" aria-hidden="true" tabindex="-1"></a>final_forecast_df[<span class="st">"final_forecast"</span>] <span class="op">=</span> final_forecast_df[</span>
+<span id="cb21-89"><a href="#cb21-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"linear_forecast"</span></span>
+<span id="cb21-90"><a href="#cb21-90" aria-hidden="true" tabindex="-1"></a>] <span class="op">+</span> final_forecast_df[<span class="st">"manual_adj"</span>].fillna(<span class="dv">0</span>)</span>
+<span id="cb21-91"><a href="#cb21-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-92"><a href="#cb21-92" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply custom rounding</span></span>
+<span id="cb21-93"><a href="#cb21-93" aria-hidden="true" tabindex="-1"></a>final_forecast_df[<span class="st">"final_forecast"</span>] <span class="op">=</span> final_forecast_df[<span class="st">"final_forecast"</span>].<span class="bu">apply</span>(</span>
+<span id="cb21-94"><a href="#cb21-94" aria-hidden="true" tabindex="-1"></a>    custom_round</span>
 <span id="cb21-95"><a href="#cb21-95" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-96"><a href="#cb21-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-97"><a href="#cb21-97" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply custom rounding</span></span>
-<span id="cb21-98"><a href="#cb21-98" aria-hidden="true" tabindex="-1"></a>final_forecast_df[<span class="st">"final_forecast"</span>] <span class="op">=</span> final_forecast_df[<span class="st">"final_forecast"</span>].<span class="bu">apply</span>(</span>
-<span id="cb21-99"><a href="#cb21-99" aria-hidden="true" tabindex="-1"></a>    custom_round</span>
-<span id="cb21-100"><a href="#cb21-100" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-101"><a href="#cb21-101" aria-hidden="true" tabindex="-1"></a>final_forecast_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-96"><a href="#cb21-96" aria-hidden="true" tabindex="-1"></a>final_forecast_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <div>
 
@@ -2584,7 +2543,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="030df40c" class="cell" data-execution_count="22">
+<div id="8aabc765" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Export data for the externals-app Shiny app.</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define transformer from UTM Zone 12N (EPSG:32612) to WGS84 Lat/Lon (EPSG:4326)</span></span>
@@ -2622,7 +2581,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">"PROJ_GRP"</span>, <span class="st">"linear_forecast_notes"</span>, <span class="st">"segid"</span>, <span class="st">"name"</span>, <span class="st">"external"</span>]</span>
 <span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>).fillna(<span class="dv">0</span>).astype(<span class="bu">int</span>).to_csv(<span class="st">"externals-app/data/linear-forecasts.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="e091ab03" class="cell" data-execution_count="23">
+<div id="fb8e6c66" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>final_forecast_df.to_csv(<span class="st">"results/final_forecast_df.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -2630,7 +2589,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="step-5-export-data-was-5-export-data">Step 5: Export Data (was <code>5-Export-Data</code>)</h2>
 <section id="helper-functions" class="level3">
 <h3 class="anchored" data-anchor-id="helper-functions">Helper functions</h3>
-<div id="338d98ee" class="cell" data-execution_count="24">
+<div id="5d859197" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sophisticated_fill(group: pd.DataFrame) <span class="op">-&gt;</span> pd.Series:</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Interpolates AADT_Forecast gaps and back-extrapolates from the earliest trend."""</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A. PREPARE DATA</span></span>
@@ -2662,7 +2621,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># D. RE-ALIGNMENT</span></span>
 <span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.Series(s_final.loc[group[<span class="st">"Year"</span>]].values, index<span class="op">=</span>group.index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="c00f1a70" class="cell" data-execution_count="25">
+<div id="c6e59eab" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> project_future_volumes(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    group: pd.DataFrame,</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    value_col: <span class="bu">str</span>,</span>
@@ -2720,7 +2679,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="input-data" class="level3">
 <h3 class="anchored" data-anchor-id="input-data">Input data</h3>
-<div id="053f637e" class="cell" data-execution_count="26">
+<div id="f5c989d4" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>forecast_results <span class="op">=</span> pd.read_csv(<span class="st">"results/final_forecast_df.csv"</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>forecast_results[[<span class="st">"externalid"</span>, <span class="st">"year"</span>, <span class="st">"final_forecast"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
@@ -2810,7 +2769,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="c6676339" class="cell" data-execution_count="27">
+<div id="4e45e270" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>gdf_master_segments <span class="op">=</span> gpd.read_file(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"zip://data/updated-traffic-factors/Master_Segs_withFactors_20251120.zip"</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>).to_crs(PROJECT_CRS)</span>
@@ -3118,7 +3077,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="5c6dda4c" class="cell" data-execution_count="28">
+<div id="b35eaf8d" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read Processed UDOT AADT Data directly from GitHub repo</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> fetch_github(</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://raw.githubusercontent.com/WFRCAnalytics/DATA-UDOT-AADT-Processing/refs/heads/main/_output/udot_aadt_trkpct_data.csv"</span>,</span>
@@ -3298,7 +3257,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Reusing <code>external_segment_link</code> from Step 1 rather than re-reading it — same file, same CCS-319 override, so there’s a single place that logic can be edited.</p>
-<div id="7d3e9a8c" class="cell" data-execution_count="29">
+<div id="2cdc7adf" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>external_segment_link</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="29">
 <div>
@@ -3524,7 +3483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="67d8bc14" class="cell" data-execution_count="30">
+<div id="51f7d015" class="cell" data-execution_count="30">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior published version of external_year_vol.csv — used below as a fallback source</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># for AWDT_FAC and historic AADT/truck-% where the primary sources have gaps.</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>df_external_year_archive <span class="op">=</span> pd.read_csv(<span class="vs">r"archive/v920/external_year_vol</span><span class="dv">.</span><span class="vs">csv"</span>)</span>
@@ -3753,7 +3712,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="prepare-data">Prepare data</h3>
 <section id="step-1-initialize-final-dataframe-structure" class="level4">
 <h4 class="anchored" data-anchor-id="step-1-initialize-final-dataframe-structure">Step 1: Initialize final dataframe structure</h4>
-<div id="803fef37" class="cell" data-execution_count="31">
+<div id="0971e7a2" class="cell" data-execution_count="31">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df_external_year <span class="op">=</span> (</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    pd.MultiIndex.from_product(</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        [</span>
@@ -3925,7 +3884,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-2-awdt-factors-with-fallback" class="level4">
 <h4 class="anchored" data-anchor-id="step-2-awdt-factors-with-fallback">Step 2: AWDT factors (with fallback)</h4>
-<div id="450cab3c" class="cell" data-execution_count="32">
+<div id="e45b0b6e" class="cell" data-execution_count="32">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Primary: From Master Segments</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"AWDT_FAC"</span>] <span class="op">=</span> df_external_year[<span class="st">"segid"</span>].<span class="bu">map</span>(</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    gdf_master_segments.set_index(<span class="st">"SEGID"</span>)[<span class="st">"FAC_WDAVG"</span>]</span>
@@ -4090,7 +4049,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-3-historic-data-integration-1981---2022" class="level4">
 <h4 class="anchored" data-anchor-id="step-3-historic-data-integration-1981---2022">Step 3: Historic data integration (1981 - 2022)</h4>
-<div id="e898585b" class="cell" data-execution_count="33">
+<div id="c08aabfe" class="cell" data-execution_count="33">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Merge UDOT Data based on Year and Route</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>udot_subset <span class="op">=</span> df_aadt_udot[</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"YEAR"</span>, <span class="st">"RouteID"</span>, <span class="st">"BeginPoint"</span>, <span class="st">"EndPoint"</span>, <span class="st">"AADT"</span>, <span class="st">"SUTRK"</span>, <span class="st">"CUTRK"</span>]</span>
@@ -4328,7 +4287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-4-forecast-data-aadt-hybridization" class="level3">
 <h3 class="anchored" data-anchor-id="step-4-forecast-data-aadt-hybridization">Step 4: Forecast data &amp; AADT hybridization</h3>
-<div id="953725ef" class="cell" data-execution_count="34">
+<div id="249828c9" class="cell" data-execution_count="34">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Map Forecast Results (Sparse data: 2027, 2032, ... 2060 etc.)</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"AADT_Forecast"</span>] <span class="op">=</span> (</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    df_external_year.set_index([<span class="st">"WF_Ext"</span>, <span class="st">"Year"</span>])</span>
@@ -4568,7 +4527,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-5-truck-volume-projections" class="level3">
 <h3 class="anchored" data-anchor-id="step-5-truck-volume-projections">Step 5: Truck volume projections</h3>
-<div id="b8fd145c" class="cell" data-execution_count="35">
+<div id="8e75c51e" class="cell" data-execution_count="35">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A. Calculate Base Historic Volumes (Rows &lt; 2025)</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"TRUCK_SU"</span>] <span class="op">=</span> (</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    df_external_year[<span class="st">"AADT"</span>] <span class="op">*</span> df_external_year[<span class="st">"PctTrk_SU"</span>].fillna(<span class="dv">0</span>)</span>
@@ -4867,7 +4826,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="matched-station-ccs-split" class="level4">
 <h4 class="anchored" data-anchor-id="matched-station-ccs-split">Matched-station CCS split</h4>
-<div id="e0381cb8" class="cell" data-execution_count="36">
+<div id="037405fc" class="cell" data-execution_count="36">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine both CCS extracts' length-bin count data (WFRC_260202.zip is the original</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># WFRC-county extract; 20260728_UDOT_CCS is a small supplemental pull covering a few</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sites outside that coverage, e.g. 307 and 615).</span></span>
@@ -4896,42 +4855,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>ccs_connections <span class="op">=</span> pd.read_csv(<span class="st">"data/External Stations - CCS Connections.csv"</span>)</span>
 <span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_ccs_split(site_candidates, jklp_df, split_factors_df):</span>
-<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a><span class="co">    Tries each candidate CCS SITE id in order (a station may list more than</span></span>
-<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a><span class="co">    one candidate site); returns (site_used, LT%, MD%, HV%) from the first</span></span>
-<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a><span class="co">    one with usable Tue/Wed/Thu length-bin count data, or None if none of</span></span>
-<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a><span class="co">    the candidates have any.</span></span>
-<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> site <span class="kw">in</span> site_candidates:</span>
-<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>        by_bin <span class="op">=</span> jklp_df.loc[jklp_df[<span class="st">"abs_site"</span>] <span class="op">==</span> site].groupby(<span class="st">"LENGTH_DEF"</span>)[<span class="st">"COUNT"</span>].<span class="bu">sum</span>()</span>
-<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> by_bin.<span class="bu">sum</span>() <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
-<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>        lt <span class="op">=</span> md <span class="op">=</span> hv <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> bin_name, count <span class="kw">in</span> by_bin.items():</span>
-<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> bin_name <span class="kw">not</span> <span class="kw">in</span> split_factors_df.index:</span>
-<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
-<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>            lt <span class="op">+=</span> count <span class="op">*</span> split_factors_df.loc[bin_name, <span class="st">"LT"</span>] <span class="op">/</span> <span class="dv">100</span></span>
-<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a>            md <span class="op">+=</span> count <span class="op">*</span> split_factors_df.loc[bin_name, <span class="st">"MD"</span>] <span class="op">/</span> <span class="dv">100</span></span>
-<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a>            hv <span class="op">+=</span> count <span class="op">*</span> split_factors_df.loc[bin_name, <span class="st">"HV"</span>] <span class="op">/</span> <span class="dv">100</span></span>
-<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> lt <span class="op">+</span> md <span class="op">+</span> hv</span>
-<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> total <span class="op">&gt;</span> <span class="dv">0</span>:</span>
-<span id="cb36-49"><a href="#cb36-49" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> site, lt <span class="op">/</span> total, md <span class="op">/</span> total, hv <span class="op">/</span> total</span>
-<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-52"><a href="#cb36-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-53"><a href="#cb36-53" aria-hidden="true" tabindex="-1"></a>matched_pct <span class="op">=</span> {}</span>
-<span id="cb36-54"><a href="#cb36-54" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> ccs_connections.iterrows():</span>
-<span id="cb36-55"><a href="#cb36-55" aria-hidden="true" tabindex="-1"></a>    site_str <span class="op">=</span> row[<span class="st">"SITE"</span>]</span>
-<span id="cb36-56"><a href="#cb36-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pd.isna(site_str) <span class="kw">or</span> <span class="bu">str</span>(site_str).strip() <span class="op">==</span> <span class="st">""</span>:</span>
-<span id="cb36-57"><a href="#cb36-57" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb36-58"><a href="#cb36-58" aria-hidden="true" tabindex="-1"></a>    candidates <span class="op">=</span> [<span class="bu">int</span>(<span class="bu">float</span>(s.strip())) <span class="cf">for</span> s <span class="kw">in</span> <span class="bu">str</span>(site_str).split(<span class="st">","</span>)]</span>
-<span id="cb36-59"><a href="#cb36-59" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> compute_ccs_split(candidates, jklp_tue_wed_thu, split_factors)</span>
-<span id="cb36-60"><a href="#cb36-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> result <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb36-61"><a href="#cb36-61" aria-hidden="true" tabindex="-1"></a>        _, lt_pct, md_pct, hv_pct <span class="op">=</span> result</span>
-<span id="cb36-62"><a href="#cb36-62" aria-hidden="true" tabindex="-1"></a>        matched_pct[<span class="bu">int</span>(row[<span class="st">"N"</span>])] <span class="op">=</span> {<span class="st">"MD"</span>: md_pct, <span class="st">"HV"</span>: hv_pct}</span>
-<span id="cb36-63"><a href="#cb36-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-64"><a href="#cb36-64" aria-hidden="true" tabindex="-1"></a>matched_pct</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_ccs_split(</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>    site_candidates: <span class="bu">list</span>[<span class="bu">int</span>], jklp_df: pd.DataFrame, split_factors_df: pd.DataFrame</span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">float</span>, <span class="bu">float</span>, <span class="bu">float</span>] <span class="op">|</span> <span class="va">None</span>:</span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a><span class="co">    Tries each candidate CCS SITE id in order (a station may list more than</span></span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a><span class="co">    one candidate site); returns (site_used, LT%, MD%, HV%) from the first</span></span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a><span class="co">    one with usable Tue/Wed/Thu length-bin count data, or None if none of</span></span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a><span class="co">    the candidates have any.</span></span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> site <span class="kw">in</span> site_candidates:</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>        by_bin <span class="op">=</span> jklp_df.loc[jklp_df[<span class="st">"abs_site"</span>] <span class="op">==</span> site].groupby(<span class="st">"LENGTH_DEF"</span>)[<span class="st">"COUNT"</span>].<span class="bu">sum</span>()</span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> by_bin.<span class="bu">sum</span>() <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>        lt <span class="op">=</span> md <span class="op">=</span> hv <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> bin_name, count <span class="kw">in</span> by_bin.items():</span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> bin_name <span class="kw">not</span> <span class="kw">in</span> split_factors_df.index:</span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a>            lt <span class="op">+=</span> count <span class="op">*</span> split_factors_df.loc[bin_name, <span class="st">"LT"</span>] <span class="op">/</span> <span class="dv">100</span></span>
+<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a>            md <span class="op">+=</span> count <span class="op">*</span> split_factors_df.loc[bin_name, <span class="st">"MD"</span>] <span class="op">/</span> <span class="dv">100</span></span>
+<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a>            hv <span class="op">+=</span> count <span class="op">*</span> split_factors_df.loc[bin_name, <span class="st">"HV"</span>] <span class="op">/</span> <span class="dv">100</span></span>
+<span id="cb36-49"><a href="#cb36-49" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> lt <span class="op">+</span> md <span class="op">+</span> hv</span>
+<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> total <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> site, lt <span class="op">/</span> total, md <span class="op">/</span> total, hv <span class="op">/</span> total</span>
+<span id="cb36-52"><a href="#cb36-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb36-53"><a href="#cb36-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-54"><a href="#cb36-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-55"><a href="#cb36-55" aria-hidden="true" tabindex="-1"></a>matched_pct <span class="op">=</span> {}</span>
+<span id="cb36-56"><a href="#cb36-56" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> ccs_connections.iterrows():</span>
+<span id="cb36-57"><a href="#cb36-57" aria-hidden="true" tabindex="-1"></a>    site_str <span class="op">=</span> row[<span class="st">"SITE"</span>]</span>
+<span id="cb36-58"><a href="#cb36-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pd.isna(site_str) <span class="kw">or</span> <span class="bu">str</span>(site_str).strip() <span class="op">==</span> <span class="st">""</span>:</span>
+<span id="cb36-59"><a href="#cb36-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb36-60"><a href="#cb36-60" aria-hidden="true" tabindex="-1"></a>    candidates <span class="op">=</span> [<span class="bu">int</span>(<span class="bu">float</span>(s.strip())) <span class="cf">for</span> s <span class="kw">in</span> <span class="bu">str</span>(site_str).split(<span class="st">","</span>)]</span>
+<span id="cb36-61"><a href="#cb36-61" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> compute_ccs_split(candidates, jklp_tue_wed_thu, split_factors)</span>
+<span id="cb36-62"><a href="#cb36-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> result <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb36-63"><a href="#cb36-63" aria-hidden="true" tabindex="-1"></a>        _, lt_pct, md_pct, hv_pct <span class="op">=</span> result</span>
+<span id="cb36-64"><a href="#cb36-64" aria-hidden="true" tabindex="-1"></a>        matched_pct[<span class="bu">int</span>(row[<span class="st">"N"</span>])] <span class="op">=</span> {<span class="st">"MD"</span>: md_pct, <span class="st">"HV"</span>: hv_pct}</span>
+<span id="cb36-65"><a href="#cb36-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-66"><a href="#cb36-66" aria-hidden="true" tabindex="-1"></a>matched_pct</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="36">
 <pre><code>{3606: {'MD': np.float64(0.06361746125939362),
   'HV': np.float64(0.07374354638507385)},
@@ -4956,8 +4917,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="functional-class-lookup-for-unmatched-stations" class="level4">
 <h4 class="anchored" data-anchor-id="functional-class-lookup-for-unmatched-stations">Functional Class lookup (for unmatched stations)</h4>
-<div id="e03a49d4" class="cell" data-execution_count="37">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ft_to_functional_class(ft):</span>
+<div id="12100a54" class="cell" data-execution_count="37">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ft_to_functional_class(ft: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span>:</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Maps a WFv1000 master-net FT_2023 facility-type code to the ratio</span></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">    table's Functional Class categories, per the UDOT/WFRC FT code legend."""</span></span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ft <span class="op">==</span> <span class="dv">2</span>:</span>
@@ -5040,14 +5001,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="regional-adjustment-ratio-lookup" class="level4">
 <h4 class="anchored" data-anchor-id="regional-adjustment-ratio-lookup">Regional adjustment ratio lookup</h4>
-<div id="1e746b79" class="cell" data-execution_count="38">
+<div id="f731a6db" class="cell" data-execution_count="38">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>reclass_ratio <span class="op">=</span> pd.read_csv(<span class="st">"data/CCS_Reclass_Ratio_2025_2003.csv"</span>).set_index(</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Functional Class"</span></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>all_stations_ratio <span class="op">=</span> reclass_ratio.loc[<span class="st">"All Stations"</span>]</span>
 <span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ratio_for_class(functional_class):</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ratio_for_class(functional_class: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span>) <span class="op">-&gt;</span> pd.Series:</span>
 <span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Looks up the MD/HV ratio for a Functional Class, falling back to the</span></span>
 <span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="co">    statewide "All Stations" ratio for Local/Unpaved (neither has its own</span></span>
 <span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="co">    row) or any unrecognized/ambiguous class."""</span></span>
@@ -5059,7 +5020,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="apply-override-matched-stations-rescale-unmatched-stations" class="level4">
 <h4 class="anchored" data-anchor-id="apply-override-matched-stations-rescale-unmatched-stations">Apply: override matched stations, rescale unmatched stations</h4>
-<div id="a35a4d8c" class="cell" data-execution_count="39">
+<div id="3017e4c6" class="cell" data-execution_count="39">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ext_id, pct <span class="kw">in</span> matched_pct.items():</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> df_external_year[<span class="st">"WF_Ext"</span>] <span class="op">==</span> ext_id</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    df_external_year.loc[mask, <span class="st">"PctTrk_SU"</span>] <span class="op">=</span> pct[<span class="st">"MD"</span>]</span>
@@ -5320,7 +5281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-6-passenger-weekly-counts" class="level3">
 <h3 class="anchored" data-anchor-id="step-6-passenger-weekly-counts">Step 6: Passenger &amp; weekly counts</h3>
-<div id="ecb1f776" class="cell" data-execution_count="40">
+<div id="ec2e81b3" class="cell" data-execution_count="40">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"PASSENGER"</span>] <span class="op">=</span> (</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    (</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>        df_external_year[<span class="st">"AADT"</span>]</span>
@@ -5646,7 +5607,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-7-vintage-labeling" class="level3">
 <h3 class="anchored" data-anchor-id="step-7-vintage-labeling">Step 7: Vintage labeling</h3>
-<div id="3ff62d98" class="cell" data-execution_count="41">
+<div id="3c66b1af" class="cell" data-execution_count="41">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"Vintage"</span>] <span class="op">=</span> np.where(</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    df_external_year[<span class="st">"Year"</span>]</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;=</span> df_external_year[<span class="st">"WF_Ext"</span>].<span class="bu">map</span>(</span>
@@ -5965,7 +5926,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="export-final-results" class="level2">
 <h2 class="anchored" data-anchor-id="export-final-results">Export final results</h2>
-<div id="0a9df522" class="cell" data-execution_count="42">
+<div id="1a78b0d6" class="cell" data-execution_count="42">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"results"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>(</span>

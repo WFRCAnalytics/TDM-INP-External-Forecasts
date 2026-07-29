@@ -216,52 +216,16 @@ future_years = [2027, 2032, 2036, 2046, 2055, 2060]
 ```
 
 ```{python}
+# One projection group per "Since <year>" starting point, all ending at
+# HISTORIC_END with no excluded years -- a pure derived sequence, unlike
+# selected_forecast_df/manual_adj_df below, which are genuine per-station
+# judgment calls and stay as literal tables.
 df_proj_groups_linear = pd.DataFrame(
     [
-        ["Since 1981", 1981, 2023, {}],
-        ["Since 1982", 1982, 2023, {}],
-        ["Since 1983", 1983, 2023, {}],
-        ["Since 1984", 1984, 2023, {}],
-        ["Since 1985", 1985, 2023, {}],
-        ["Since 1986", 1986, 2023, {}],
-        ["Since 1987", 1987, 2023, {}],
-        ["Since 1988", 1988, 2023, {}],
-        ["Since 1989", 1989, 2023, {}],
-        ["Since 1990", 1990, 2023, {}],
-        ["Since 1991", 1991, 2023, {}],
-        ["Since 1992", 1992, 2023, {}],
-        ["Since 1993", 1993, 2023, {}],
-        ["Since 1994", 1994, 2023, {}],
-        ["Since 1995", 1995, 2023, {}],
-        ["Since 1996", 1996, 2023, {}],
-        ["Since 1997", 1997, 2023, {}],
-        ["Since 1998", 1998, 2023, {}],
-        ["Since 1999", 1999, 2023, {}],
-        ["Since 2000", 2000, 2023, {}],
-        ["Since 2001", 2001, 2023, {}],
-        ["Since 2002", 2002, 2023, {}],
-        ["Since 2003", 2003, 2023, {}],
-        ["Since 2004", 2004, 2023, {}],
-        ["Since 2005", 2005, 2023, {}],
-        ["Since 2006", 2006, 2023, {}],
-        ["Since 2007", 2007, 2023, {}],
-        ["Since 2008", 2008, 2023, {}],
-        ["Since 2009", 2009, 2023, {}],
-        ["Since 2010", 2010, 2023, {}],
-        ["Since 2011", 2011, 2023, {}],
-        ["Since 2012", 2012, 2023, {}],
-        ["Since 2013", 2013, 2023, {}],
-        ["Since 2014", 2014, 2023, {}],
-        ["Since 2015", 2015, 2023, {}],
-        ["Since 2016", 2016, 2023, {}],
-        ["Since 2017", 2017, 2023, {}],
-        ["Since 2018", 2018, 2023, {}],
-        ["Since 2019", 2019, 2023, {}],
-        ["Since 2020", 2020, 2023, {}],
-        ["Since 2021", 2021, 2023, {}],
-        ["Since 2022", 2022, 2023, {}],
+        [f"Since {year}", year, YEARS["HISTORIC_END"], {}]
+        for year in range(YEARS["HISTORIC_START"], YEARS["HISTORIC_END"])
     ],
-    columns=("pgName", "pgYearFrom", "pgYearTo", "pgYearsExclude"),
+    columns=("pg_name", "pg_year_from", "pg_year_to", "pg_years_exclude"),
 )
 df_proj_groups_linear
 ```
@@ -317,11 +281,11 @@ no_data_externalids = set()
 # Open the error file
 with open("intermediate/linear-forecasts-errors.txt", "w") as err_file:
     # Loop through the projection groups
-    for index, row in df_proj_groups_linear.iterrows():
-        pgName = row["pgName"]
-        pgYearFrom = row["pgYearFrom"]
-        pgYearTo = row["pgYearTo"]
-        pgYearsExclude = set(row["pgYearsExclude"])
+    for _, row in df_proj_groups_linear.iterrows():
+        pg_name = row["pg_name"]
+        pg_year_from = row["pg_year_from"]
+        pg_year_to = row["pg_year_to"]
+        pg_years_exclude = set(row["pg_years_exclude"])
 
         # Group by externalid and segid and iterate through the groups
         for (externalid, segid), group in df_historic_aadt.groupby(
@@ -329,14 +293,14 @@ with open("intermediate/linear-forecasts-errors.txt", "w") as err_file:
         ):
             # Filter the data according to the projection group criteria
             filtered_group = group[
-                (group["year"] >= pgYearFrom) & (group["year"] <= pgYearTo)
+                (group["year"] >= pg_year_from) & (group["year"] <= pg_year_to)
             ]
             filtered_group = filtered_group[
-                ~filtered_group["year"].isin(pgYearsExclude)
+                ~filtered_group["year"].isin(pg_years_exclude)
             ]
 
             fit_result = fit_linear_forecast(
-                filtered_group, pgName, pgYearFrom, future_years
+                filtered_group, pg_name, pg_year_from, future_years
             )
 
             if fit_result is not None:
@@ -349,9 +313,9 @@ with open("intermediate/linear-forecasts-errors.txt", "w") as err_file:
                 # since a shorter window can't fix a lack of data.
                 if externalid in no_data_externalids:
                     continue  # Skip this segid
-                error_msg = f"No valid data for externalid: {externalid}, segid: {segid}, Projection Group: {pgName}. Filling zeros."
+                error_msg = f"No valid data for externalid: {externalid}, segid: {segid}, Projection Group: {pg_name}. Filling zeros."
                 err_file.write(error_msg + "\n")
-                aadt = np.zeros(len([pgYearFrom] + future_years), dtype=int)
+                aadt = np.zeros(len([pg_year_from] + future_years), dtype=int)
                 proj_grp_used = "No Data"
                 no_data_externalids.add(externalid)
 
@@ -364,7 +328,7 @@ with open("intermediate/linear-forecasts-errors.txt", "w") as err_file:
             result_dict.update(
                 {
                     year: forecast
-                    for year, forecast in zip([pgYearFrom] + future_years, aadt)
+                    for year, forecast in zip([pg_year_from] + future_years, aadt)
                 }
             )
 
@@ -618,14 +582,9 @@ final_forecast_df = pd.merge(
 )
 
 # Compute final_forecast using manual adjustments where available
-final_forecast_df["final_forecast"] = final_forecast_df.apply(
-    lambda row: (
-        row["linear_forecast"] + row["manual_adj"]
-        if pd.notnull(row["manual_adj"])
-        else row["linear_forecast"]
-    ),
-    axis=1,
-)
+final_forecast_df["final_forecast"] = final_forecast_df[
+    "linear_forecast"
+] + final_forecast_df["manual_adj"].fillna(0)
 
 # Apply custom rounding
 final_forecast_df["final_forecast"] = final_forecast_df["final_forecast"].apply(
@@ -1064,7 +1023,9 @@ split_factors = pd.read_csv("data/LT_MD_HV_Split_Factors_2025.csv").dropna(
 ccs_connections = pd.read_csv("data/External Stations - CCS Connections.csv")
 
 
-def compute_ccs_split(site_candidates, jklp_df, split_factors_df):
+def compute_ccs_split(
+    site_candidates: list[int], jklp_df: pd.DataFrame, split_factors_df: pd.DataFrame
+) -> tuple[int, float, float, float] | None:
     """
     Tries each candidate CCS SITE id in order (a station may list more than
     one candidate site); returns (site_used, LT%, MD%, HV%) from the first
@@ -1105,7 +1066,7 @@ matched_pct
 #### Functional Class lookup (for unmatched stations)
 
 ```{python}
-def ft_to_functional_class(ft):
+def ft_to_functional_class(ft: int) -> str | None:
     """Maps a WFv1000 master-net FT_2023 facility-type code to the ratio
     table's Functional Class categories, per the UDOT/WFRC FT code legend."""
     if ft == 2:
@@ -1164,7 +1125,7 @@ reclass_ratio = pd.read_csv("data/CCS_Reclass_Ratio_2025_2003.csv").set_index(
 all_stations_ratio = reclass_ratio.loc["All Stations"]
 
 
-def ratio_for_class(functional_class):
+def ratio_for_class(functional_class: str | None) -> pd.Series:
     """Looks up the MD/HV ratio for a Functional Class, falling back to the
     statewide "All Stations" ratio for Local/Unpaved (neither has its own
     row) or any unrecognized/ambiguous class."""
