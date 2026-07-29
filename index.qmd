@@ -6,9 +6,10 @@ execute:
   freeze: false
 ---
 
-Single-document version of the external-station forecasting pipeline, replacing the
-5 sequential notebooks (`1-Get-Historic-AADT` through `5-Export-Data`). Same inputs,
-same logic, same outputs — this is a format migration only, not a methodology change.
+Single-document version of the external-station forecasting pipeline, originally
+migrated from 5 sequential notebooks (`1-Get-Historic-AADT` through `5-Export-Data`)
+as a straight format port. Step 5.5 (CCS-derived truck split) was added afterward and
+is a genuine methodology change layered on top of that port — see below.
 
 **How the final AADT for each external station is assembled, by year:**
 
@@ -18,9 +19,24 @@ same logic, same outputs — this is a format migration only, not a methodology 
 - **2027 onward**: a per-station OLS linear trend (Step 3), fit over a forecaster-selected
   historic window and adjusted with hand-tuned corrections (Step 4).
 
-Truck vs. passenger split (`TRUCK_SU`/`TRUCK_MU`/`PASSENGER`) uses UDOT's `SUTRK`/`CUTRK`
-percentages through 2024, then switches to a per-station regression of truck volume against
-AADT (not year) for 2025 onward — see `project_future_volumes`.
+**How the truck/passenger split is assembled, by year** — note this is a two-layer
+process: Steps 5 and 5.5 both run for every row, with 5.5 always having the final say.
+
+- **Step 5** computes an "existing" `PctTrk_SU`/`PctTrk_MU` baseline for every year: UDOT's
+  historic `SUTRK`/`CUTRK` percentages through 2024, then a per-station regression of
+  truck volume against AADT (not year) for 2025 onward — see `project_future_volumes`.
+- **Step 5.5** then overrides or rescales that baseline for *every* year 1981–2060, not
+  just the forecast years:
+  - Stations matched to a usable CCS (Continuous Count Station) vehicle-length count —
+    via `data/External Stations - CCS Connections.csv` — get a single fixed percentage
+    derived from that station's own length-bin distribution, replacing the Step 5 series
+    outright for all years.
+  - Stations without a usable CCS match instead keep the Step 5 series but rescale it by
+    a constant regional adjustment ratio, keyed by the station's road Functional Class
+    (derived from the WFv1000 master network), falling back to a statewide "All Stations"
+    ratio for Local/Unpaved roads.
+- `PASSENGER` is always the remainder: `AADT - TRUCK_SU - TRUCK_MU`, computed after
+  Step 5.5 so it reflects whichever split won.
 
 ## Setup
 

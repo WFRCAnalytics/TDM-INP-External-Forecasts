@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -68,10 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="index_files/libs/quarto-html/anchor.min.js"></script>
 <link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="index_files/libs/bootstrap/bootstrap-efbb37e9afcc02144ebbc7afd12a776f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="index_files/libs/bootstrap/bootstrap-215b371544c282197b31c8aa00ce3677.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
@@ -104,17 +107,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Single-document version of the external-station forecasting pipeline, replacing the 5 sequential notebooks (<code>1-Get-Historic-AADT</code> through <code>5-Export-Data</code>). Same inputs, same logic, same outputs — this is a format migration only, not a methodology change.</p>
+<p>Single-document version of the external-station forecasting pipeline, originally migrated from 5 sequential notebooks (<code>1-Get-Historic-AADT</code> through <code>5-Export-Data</code>) as a straight format port. Step 5.5 (CCS-derived truck split) was added afterward and is a genuine methodology change layered on top of that port — see below.</p>
 <p><strong>How the final AADT for each external station is assembled, by year:</strong></p>
 <ul>
 <li><strong>1981–2022</strong>: historic AADT from UDOT/HPMS, matched to each station by route + milepost.</li>
 <li><strong>2023–2026</strong>: gap-filled by <code>sophisticated_fill</code> — interpolated/extrapolated from the linear-trend forecast points below.</li>
 <li><strong>2027 onward</strong>: a per-station OLS linear trend (Step 3), fit over a forecaster-selected historic window and adjusted with hand-tuned corrections (Step 4).</li>
 </ul>
-<p>Truck vs.&nbsp;passenger split (<code>TRUCK_SU</code>/<code>TRUCK_MU</code>/<code>PASSENGER</code>) uses UDOT’s <code>SUTRK</code>/<code>CUTRK</code> percentages through 2024, then switches to a per-station regression of truck volume against AADT (not year) for 2025 onward — see <code>project_future_volumes</code>.</p>
+<p><strong>How the truck/passenger split is assembled, by year</strong> — note this is a two-layer process: Steps 5 and 5.5 both run for every row, with 5.5 always having the final say.</p>
+<ul>
+<li><strong>Step 5</strong> computes an “existing” <code>PctTrk_SU</code>/<code>PctTrk_MU</code> baseline for every year: UDOT’s historic <code>SUTRK</code>/<code>CUTRK</code> percentages through 2024, then a per-station regression of truck volume against AADT (not year) for 2025 onward — see <code>project_future_volumes</code>.</li>
+<li><strong>Step 5.5</strong> then overrides or rescales that baseline for <em>every</em> year 1981–2060, not just the forecast years:
+<ul>
+<li>Stations matched to a usable CCS (Continuous Count Station) vehicle-length count — via <code>data/External Stations - CCS Connections.csv</code> — get a single fixed percentage derived from that station’s own length-bin distribution, replacing the Step 5 series outright for all years.</li>
+<li>Stations without a usable CCS match instead keep the Step 5 series but rescale it by a constant regional adjustment ratio, keyed by the station’s road Functional Class (derived from the WFv1000 master network), falling back to a statewide “All Stations” ratio for Local/Unpaved roads.</li>
+</ul></li>
+<li><code>PASSENGER</code> is always the remainder: <code>AADT - TRUCK_SU - TRUCK_MU</code>, computed after Step 5.5 so it reflects whichever split won.</li>
+</ul>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="7df2bb28" class="cell" data-execution_count="1">
+<div id="cffe0fc4" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
@@ -144,7 +156,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>PIPELINE_END_YEAR <span class="op">=</span> <span class="dv">2060</span>  <span class="co"># last year in the exported forecast grid</span></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>EXPORT_START_YEAR <span class="op">=</span> <span class="dv">2010</span>  <span class="co"># results/external_year_vol.csv is filtered to Year &gt;= this</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cdf1222c" class="cell" data-execution_count="2">
+<div id="8f12fb77" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fetch_github(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    url: <span class="bu">str</span>, mode: <span class="bu">str</span> <span class="op">=</span> <span class="st">"private"</span>, token_env_var: <span class="bu">str</span> <span class="op">=</span> <span class="st">"GITHUB_TOKEN"</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> requests.Response:</span>
@@ -184,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-1-historic-aadt-was-1-get-historic-aadt" class="level2">
 <h2 class="anchored" data-anchor-id="step-1-historic-aadt-was-1-get-historic-aadt">Step 1: Historic AADT (was <code>1-Get-Historic-AADT</code>)</h2>
-<div id="be077c0b" class="cell" data-execution_count="3">
+<div id="560f0859" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>externals_df <span class="op">=</span> pd.read_csv(<span class="st">"params/externals.csv"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>aadt_df <span class="op">=</span> pd.read_csv(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/AADTHistory 2023.xlsx - UnroundedAADT2023.csv"</span>, low_memory<span class="op">=</span><span class="va">False</span></span>
@@ -197,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the single source of truth for the link + override — reused as-is in Step 5.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="e460f02e" class="cell" data-execution_count="4">
+<div id="51be116f" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Melt AADT columns</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>aadt_year_cols <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> aadt_df.columns <span class="cf">if</span> re.match(<span class="vs">r"AADT</span><span class="dv">\d</span><span class="op">{4}</span><span class="dv">$</span><span class="vs">"</span>, col)]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>aadt_melted <span class="op">=</span> aadt_df.melt(</span>
@@ -326,7 +338,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="0424684e" class="cell" data-execution_count="5">
+<div id="8696e8c5" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get external route, mp</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>external_segment_link[[<span class="st">"route"</span>, <span class="st">"milepost"</span>]] <span class="op">=</span> external_segment_link[</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"segid"</span></span>
@@ -558,7 +570,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="56b9df6d" class="cell" data-execution_count="6">
+<div id="36b6b8f0" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define full list of years</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>years_full_df <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"year"</span>: <span class="bu">list</span>(<span class="bu">range</span>(HISTORIC_START_YEAR, HISTORIC_END_YEAR <span class="op">+</span> <span class="dv">1</span>))}</span>
@@ -656,7 +668,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="d6ee6e7d" class="cell" data-execution_count="7">
+<div id="0b2e9662" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge external_segment_link and aadt_melted with left join</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>matched_df <span class="op">=</span> external_segment_link.merge(aadt_melted, on<span class="op">=</span>[<span class="st">"route"</span>], how<span class="op">=</span><span class="st">"left"</span>).query(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mp_begin &lt; milepost + .01 &lt;= mp_end"</span></span>
@@ -809,7 +821,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="e7ab2248" class="cell" data-execution_count="8">
+<div id="a6b5426a" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>full_set_df <span class="op">=</span> pd.merge(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    full_index_df, matched_df, how<span class="op">=</span><span class="st">"left"</span>, on<span class="op">=</span>[<span class="st">"externalid"</span>, <span class="st">"segid"</span>, <span class="st">"year"</span>]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"externalid"</span>, <span class="st">"segid"</span>, <span class="st">"year"</span>, <span class="st">"AADT"</span>]].assign(</span>
@@ -915,13 +927,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="dd3d1036" class="cell" data-execution_count="9">
+<div id="8e840320" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>full_set_df.to_csv(<span class="st">"intermediate/external-historic-aadt.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-2-previous-forecasts-v900-was-2-prepare-previous-forecasts" class="level2">
 <h2 class="anchored" data-anchor-id="step-2-previous-forecasts-v900-was-2-prepare-previous-forecasts">Step 2: Previous Forecasts v900 (was <code>2-Prepare-Previous-Forecasts</code>)</h2>
-<div id="126ed077" class="cell" data-execution_count="10">
+<div id="796b4d75" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>previous_forecasts_df <span class="op">=</span> pd.read_csv(<span class="st">"data/external-forecasts-v900.csv"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>previous_forecasts_df <span class="op">=</span> previous_forecasts_df.melt(</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    id_vars<span class="op">=</span>[<span class="st">"TAZ"</span>], var_name<span class="op">=</span><span class="st">"year"</span>, value_name<span class="op">=</span><span class="st">"AADT"</span></span>
@@ -1028,17 +1040,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="b071d046" class="cell" data-execution_count="11">
+<div id="aee739eb" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>previous_forecasts_df.to_csv(<span class="st">"intermediate/previous-forecasts.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-3-linear-forecasts-was-3-prepare-linear-forecasts" class="level2">
 <h2 class="anchored" data-anchor-id="step-3-linear-forecasts-was-3-prepare-linear-forecasts">Step 3: Linear Forecasts (was <code>3-Prepare-Linear-Forecasts</code>)</h2>
-<div id="8a4ac1a4" class="cell" data-execution_count="12">
+<div id="4186bd65" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># list of years for which to produce linear forecasts</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>future_years <span class="op">=</span> [<span class="dv">2027</span>, <span class="dv">2032</span>, <span class="dv">2036</span>, <span class="dv">2046</span>, <span class="dv">2055</span>, <span class="dv">2060</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="5dc6324e" class="cell" data-execution_count="13">
+<div id="5e11269b" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_proj_groups_linear <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    [</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Since 1981"</span>, <span class="dv">1981</span>, <span class="dv">2023</span>, {}],</span>
@@ -1402,7 +1414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="dd8423b5" class="cell" data-execution_count="14">
+<div id="ed790246" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import historic AADT (created in step 1)</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df_historic_aadt <span class="op">=</span> pd.read_csv(<span class="st">"intermediate/external-historic-aadt.csv"</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>df_historic_aadt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1506,7 +1518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Linear forecasts with assist from ChatGPT: <a href="https://chat.openai.com/share/d127492a-ad78-4f45-afd0-50e29069db1a" class="uri">https://chat.openai.com/share/d127492a-ad78-4f45-afd0-50e29069db1a</a></p>
-<div id="13e32e2c" class="cell" data-execution_count="15">
+<div id="a0ca33b8" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit_linear_forecast(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    filtered_group: pd.DataFrame,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    pg_name: <span class="bu">str</span>,</span>
@@ -1537,7 +1549,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    aadt <span class="op">=</span> np.rint(aadt).astype(<span class="bu">int</span>)</span>
 <span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> aadt, pg_name</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="26c34ea9" class="cell" data-execution_count="16">
+<div id="fd507544" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a list to store the individual result DataFrames</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>forecast_results_list <span class="op">=</span> []</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1721,13 +1733,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="8ec4b9fd" class="cell" data-execution_count="17">
+<div id="515a1814" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>forecast_results.to_csv(<span class="st">"results/linear-forecasts.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-4-finalize-forecasts-was-4-finalize-forecasts" class="level2">
 <h2 class="anchored" data-anchor-id="step-4-finalize-forecasts-was-4-finalize-forecasts">Step 4: Finalize Forecasts (was <code>4-Finalize-Forecasts</code>)</h2>
-<div id="cbe554ee" class="cell" data-execution_count="18">
+<div id="011c6668" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>linear_forecast_df <span class="op">=</span> pd.read_csv(<span class="st">"results/linear-forecasts.csv"</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>externals_df <span class="op">=</span> pd.read_csv(<span class="st">"params/externals.csv"</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>previous_forecasts_df <span class="op">=</span> pd.read_csv(<span class="st">"intermediate/previous-forecasts.csv"</span>)</span>
@@ -1747,7 +1759,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    previous_forecasts_df[<span class="st">"year"</span>] <span class="op">&gt;</span> HISTORIC_END_YEAR</span>
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="f6252283" class="cell" data-execution_count="19">
+<div id="795eddac" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>selected_forecast_df <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    [</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        [<span class="dv">3601</span>, <span class="st">"Since 2003"</span>, <span class="st">"as early as there is data"</span>],</span>
@@ -1998,7 +2010,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="8d5607cc" class="cell" data-execution_count="20">
+<div id="5a2f5b9d" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> custom_round(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rounds to the nearest 10/50/100/500/1000, coarser at larger magnitudes."""</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;</span> <span class="dv">100</span>:</span>
@@ -2012,7 +2024,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
 <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">round</span>(x <span class="op">/</span> <span class="dv">1000</span>) <span class="op">*</span> <span class="dv">1000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="9f327533" class="cell" data-execution_count="21">
+<div id="b7edb2e9" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example manual adjustment data</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>manual_adj_df <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    [</span>
@@ -2285,7 +2297,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="2eb858a5" class="cell" data-execution_count="22">
+<div id="e324052f" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Export data for the externals-app Shiny app.</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define transformer from UTM Zone 12N (EPSG:32612) to WGS84 Lat/Lon (EPSG:4326)</span></span>
@@ -2323,7 +2335,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">"PROJ_GRP"</span>, <span class="st">"linear_forecast_notes"</span>, <span class="st">"segid"</span>, <span class="st">"name"</span>, <span class="st">"external"</span>]</span>
 <span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>).fillna(<span class="dv">0</span>).astype(<span class="bu">int</span>).to_csv(<span class="st">"externals-app/data/linear-forecasts.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="816a2c34" class="cell" data-execution_count="23">
+<div id="8814183b" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>final_forecast_df.to_csv(<span class="st">"results/final_forecast_df.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -2331,7 +2343,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="step-5-export-data-was-5-export-data">Step 5: Export Data (was <code>5-Export-Data</code>)</h2>
 <section id="helper-functions" class="level3">
 <h3 class="anchored" data-anchor-id="helper-functions">Helper functions</h3>
-<div id="20181129" class="cell" data-execution_count="24">
+<div id="5e9aed88" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sophisticated_fill(group: pd.DataFrame) <span class="op">-&gt;</span> pd.Series:</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Interpolates AADT_Forecast gaps and back-extrapolates from the earliest trend."""</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A. PREPARE DATA</span></span>
@@ -2363,7 +2375,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># D. RE-ALIGNMENT</span></span>
 <span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.Series(s_final.loc[group[<span class="st">"Year"</span>]].values, index<span class="op">=</span>group.index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="ae642f6f" class="cell" data-execution_count="25">
+<div id="8abe1b47" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> project_future_volumes(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    group: pd.DataFrame,</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    value_col: <span class="bu">str</span>,</span>
@@ -2421,7 +2433,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="input-data" class="level3">
 <h3 class="anchored" data-anchor-id="input-data">Input data</h3>
-<div id="4248e95b" class="cell" data-execution_count="26">
+<div id="ed03073c" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>forecast_results <span class="op">=</span> pd.read_csv(<span class="st">"results/final_forecast_df.csv"</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>forecast_results[[<span class="st">"externalid"</span>, <span class="st">"year"</span>, <span class="st">"final_forecast"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
@@ -2511,7 +2523,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="3b6b5a1a" class="cell" data-execution_count="27">
+<div id="d69b4cf3" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>gdf_master_segments <span class="op">=</span> gpd.read_file(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"zip://data/updated-traffic-factors/Master_Segs_withFactors_20251120.zip"</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>).to_crs(PROJECT_CRS)</span>
@@ -2819,7 +2831,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="4857cfbd" class="cell" data-execution_count="28">
+<div id="e26c9c1b" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read Processed UDOT AADT Data directly from GitHub repo</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> fetch_github(</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://raw.githubusercontent.com/WFRCAnalytics/DATA-UDOT-AADT-Processing/refs/heads/main/_output/udot_aadt_trkpct_data.csv"</span>,</span>
@@ -2999,7 +3011,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Reusing <code>external_segment_link</code> from Step 1 rather than re-reading it — same file, same CCS-319 override, so there’s a single place that logic can be edited.</p>
-<div id="8e8930da" class="cell" data-execution_count="29">
+<div id="b6eddb78" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>external_segment_link</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="29">
 <div>
@@ -3225,7 +3237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="af173766" class="cell" data-execution_count="30">
+<div id="02c514db" class="cell" data-execution_count="30">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior published version of external_year_vol.csv — used below as a fallback source</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># for AWDT_FAC and historic AADT/truck-% where the primary sources have gaps.</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>df_external_year_archive <span class="op">=</span> pd.read_csv(<span class="vs">r"archive/v920/external_year_vol</span><span class="dv">.</span><span class="vs">csv"</span>)</span>
@@ -3454,7 +3466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="prepare-data">Prepare data</h3>
 <section id="step-1-initialize-final-dataframe-structure" class="level4">
 <h4 class="anchored" data-anchor-id="step-1-initialize-final-dataframe-structure">Step 1: Initialize final dataframe structure</h4>
-<div id="d22702fa" class="cell" data-execution_count="31">
+<div id="fa4a5809" class="cell" data-execution_count="31">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df_external_year <span class="op">=</span> (</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    pd.MultiIndex.from_product(</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        [</span>
@@ -3626,7 +3638,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-2-awdt-factors-with-fallback" class="level4">
 <h4 class="anchored" data-anchor-id="step-2-awdt-factors-with-fallback">Step 2: AWDT factors (with fallback)</h4>
-<div id="0387f1a1" class="cell" data-execution_count="32">
+<div id="8e24b773" class="cell" data-execution_count="32">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Primary: From Master Segments</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"AWDT_FAC"</span>] <span class="op">=</span> df_external_year[<span class="st">"segid"</span>].<span class="bu">map</span>(</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    gdf_master_segments.set_index(<span class="st">"SEGID"</span>)[<span class="st">"FAC_WDAVG"</span>]</span>
@@ -3791,7 +3803,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-3-historic-data-integration-1981---2022" class="level4">
 <h4 class="anchored" data-anchor-id="step-3-historic-data-integration-1981---2022">Step 3: Historic data integration (1981 - 2022)</h4>
-<div id="6f86c66d" class="cell" data-execution_count="33">
+<div id="d69ec88b" class="cell" data-execution_count="33">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Merge UDOT Data based on Year and Route</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>udot_subset <span class="op">=</span> df_aadt_udot[</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"YEAR"</span>, <span class="st">"RouteID"</span>, <span class="st">"BeginPoint"</span>, <span class="st">"EndPoint"</span>, <span class="st">"AADT"</span>, <span class="st">"SUTRK"</span>, <span class="st">"CUTRK"</span>]</span>
@@ -4029,7 +4041,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-4-forecast-data-aadt-hybridization" class="level3">
 <h3 class="anchored" data-anchor-id="step-4-forecast-data-aadt-hybridization">Step 4: Forecast data &amp; AADT hybridization</h3>
-<div id="6eaa97e2" class="cell" data-execution_count="34">
+<div id="1a58a4ee" class="cell" data-execution_count="34">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Map Forecast Results (Sparse data: 2027, 2032, ... 2060 etc.)</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"AADT_Forecast"</span>] <span class="op">=</span> (</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    df_external_year.set_index([<span class="st">"WF_Ext"</span>, <span class="st">"Year"</span>])</span>
@@ -4269,7 +4281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-5-truck-volume-projections" class="level3">
 <h3 class="anchored" data-anchor-id="step-5-truck-volume-projections">Step 5: Truck volume projections</h3>
-<div id="c5e225ab" class="cell" data-execution_count="35">
+<div id="c8f39c15" class="cell" data-execution_count="35">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A. Calculate Base Historic Volumes (Rows &lt; 2025)</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"TRUCK_SU"</span>] <span class="op">=</span> (</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    df_external_year[<span class="st">"AADT"</span>] <span class="op">*</span> df_external_year[<span class="st">"PctTrk_SU"</span>].fillna(<span class="dv">0</span>)</span>
@@ -4568,7 +4580,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="matched-station-ccs-split" class="level4">
 <h4 class="anchored" data-anchor-id="matched-station-ccs-split">Matched-station CCS split</h4>
-<div id="f7deaf22" class="cell" data-execution_count="36">
+<div id="a381dc02" class="cell" data-execution_count="36">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine both CCS extracts' length-bin count data (WFRC_260202.zip is the original</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># WFRC-county extract; 20260728_UDOT_CCS is a small supplemental pull covering a few</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sites outside that coverage, e.g. 307 and 615).</span></span>
@@ -4657,7 +4669,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="functional-class-lookup-for-unmatched-stations" class="level4">
 <h4 class="anchored" data-anchor-id="functional-class-lookup-for-unmatched-stations">Functional Class lookup (for unmatched stations)</h4>
-<div id="a9d2bbdf" class="cell" data-execution_count="37">
+<div id="457b5a71" class="cell" data-execution_count="37">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ft_to_functional_class(ft):</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Maps a WFv1000 master-net FT_2023 facility-type code to the ratio</span></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">    table's Functional Class categories, per the UDOT/WFRC FT code legend."""</span></span>
@@ -4741,7 +4753,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="regional-adjustment-ratio-lookup" class="level4">
 <h4 class="anchored" data-anchor-id="regional-adjustment-ratio-lookup">Regional adjustment ratio lookup</h4>
-<div id="c14b85f4" class="cell" data-execution_count="38">
+<div id="85ab0629" class="cell" data-execution_count="38">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>reclass_ratio <span class="op">=</span> pd.read_csv(<span class="st">"data/CCS_Reclass_Ratio_2025_2003.csv"</span>).set_index(</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Functional Class"</span></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -4760,7 +4772,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="apply-override-matched-stations-rescale-unmatched-stations" class="level4">
 <h4 class="anchored" data-anchor-id="apply-override-matched-stations-rescale-unmatched-stations">Apply: override matched stations, rescale unmatched stations</h4>
-<div id="5743885d" class="cell" data-execution_count="39">
+<div id="8e0294a3" class="cell" data-execution_count="39">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ext_id, pct <span class="kw">in</span> matched_pct.items():</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> df_external_year[<span class="st">"WF_Ext"</span>] <span class="op">==</span> ext_id</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    df_external_year.loc[mask, <span class="st">"PctTrk_SU"</span>] <span class="op">=</span> pct[<span class="st">"MD"</span>]</span>
@@ -5021,7 +5033,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-6-passenger-weekly-counts" class="level3">
 <h3 class="anchored" data-anchor-id="step-6-passenger-weekly-counts">Step 6: Passenger &amp; weekly counts</h3>
-<div id="c4f5b580" class="cell" data-execution_count="40">
+<div id="f088ad0a" class="cell" data-execution_count="40">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"PASSENGER"</span>] <span class="op">=</span> (</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    (</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>        df_external_year[<span class="st">"AADT"</span>]</span>
@@ -5347,7 +5359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="step-7-vintage-labeling" class="level3">
 <h3 class="anchored" data-anchor-id="step-7-vintage-labeling">Step 7: Vintage labeling</h3>
-<div id="446b2d24" class="cell" data-execution_count="41">
+<div id="794d155f" class="cell" data-execution_count="41">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>df_external_year[<span class="st">"Vintage"</span>] <span class="op">=</span> np.where(</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    df_external_year[<span class="st">"Year"</span>]</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;=</span> df_external_year[<span class="st">"WF_Ext"</span>].<span class="bu">map</span>(</span>
@@ -5666,7 +5678,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="export-final-results" class="level2">
 <h2 class="anchored" data-anchor-id="export-final-results">Export final results</h2>
-<div id="ca32c056" class="cell" data-execution_count="42">
+<div id="ecb786aa" class="cell" data-execution_count="42">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>os.makedirs(<span class="st">"results"</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>(</span>
